@@ -277,10 +277,28 @@ in February 2020?
 
 ```{r Q3-code, echo=TRUE, message=FALSE, warning=FALSE}
 customer_scans_raw_Q3_subset <- customer_scans_raw %>%
-  filter(customerId == 83, lubridate::month(createdAt) == 02) %>%
-  select(customerId, storeName, createdAt)
+  filter(customerId == 83, lubridate::month(createdAt) == 02, 
+         lubridate::year(createdAt) == 2020) %>%
+  dplyr::select(customerId, storeName, createdAt) %>%
+  dplyr::group_by(storeName) %>%
+  dplyr::summarise(numBillsScanned = n()) %>%
+  dplyr::mutate(customerId = 83, month = "February, 2020") %>%
+  dplyr::select(customerId, everything())
 
 ```
+
+* Answer to Q3: Below is a table, which lists the stores from which customer
+id "83" scanned bills in February, 2020. It also lists the total number of bills
+scanned by customer Id "83" for each store. This information is useful in case
+more than one bill is scanned per store. 
+
+```{r Q3-answer-table, echo=TRUE, message=FALSE, warning=FALSE}
+knitr::kable(customer_scans_raw_Q3_subset)
+```
+
+## Code and answer for Q4 
+
+**Question 4**: How many unique users unlocked coupons on 10th September 2020?
 
 
 
