@@ -216,10 +216,10 @@ customer_user_raw_Q1_subset
 # Of the above 10,323 users, how many signed up in September, 2019.
 
  num_user_logInAfterSep2021_signedUpInSep2019 <- customer_user_raw_Q1_subset %>%
-  dplyr::filter(lubridate::month(createdAt) == 09) %>%
+  dplyr::filter(lubridate::month(createdAt) == 09, lubridate::year(createdAt) == 2019) %>%
    nrow()
 
- num_user_logInAfterSep2021_signedUpInSep2019 # answer to Q2Part-2 = 5,110 users
+ num_user_logInAfterSep2021_signedUpInSep2019 # answer to Q2Part-2 = 209 users
 
 ```
 
@@ -272,11 +272,13 @@ points more than 2000
 
 ## Code and answer for Q3
 
-* **Question 3: **
+* **Question 3: ** From which stores has customer id ‘83’ scanned bills
+in February 2020?
 
 ```{r Q3-code, echo=TRUE, message=FALSE, warning=FALSE}
-customer_scans_raw %>%
-  filter(customerId == 83)
+customer_scans_raw_Q3_subset <- customer_scans_raw %>%
+  filter(customerId == 83, lubridate::month(createdAt) == 02) %>%
+  select(customerId, storeName, createdAt)
 
 ```
 
