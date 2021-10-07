@@ -5,7 +5,7 @@ output:
     df_print: paged
 ---
 
-## File Structure 
+# File Structure 
 
 * To ensure that best practices are followed  (by design), this entire task is executed as a R package. 
 
@@ -26,7 +26,7 @@ output:
 
 # How to use this R Markdown notebook? 
 
-* You can preview this notebook using the **Preview** button, which will show you   rendered HTML copy of the contents of the editor. 
+* You can preview this notebook using the **Preview** button, which will show you rendered HTML copy of the contents of the editor. 
 
 * The other option is to knit this notebook into a neat PDF, which you can do using the **Knit** button.
  
@@ -39,7 +39,7 @@ output:
 * Feel free to reach out to me at **aarshbatra.in@gmail.com**/8800592799 if you have any questions or run into any problems. I will quickly troubleshoot it for you.
 
 
-```{r metadata}
+```{r metadata, echo=TRUE, message=FALSE, warning=FALSE}
 
 # metadata---------------------------------------------------------------------
 # author: Aarsh Batra
@@ -54,7 +54,8 @@ output:
 
 ```
 
-```{r load-libraries}
+
+```{r load-libraries, message=FALSE, warning=FALSE, include=FALSE}
 
 # load libraries---------------------------------------------------------------
 
@@ -64,6 +65,7 @@ library(devtools)
 library(stringr)
 library(tidyr)
 library(dplyr)
+library(skimr)
 library(magrittr)
 library(data.table)
 library(lubridate)
@@ -74,7 +76,7 @@ library(readr)
 library(readxl)
 ```
 
-```{r load-entire-package}
+```{r load-entire-package, echo=TRUE, message=FALSE, warning=FALSE}
 
 # loading the entire package--------------------------------------------------
 
@@ -83,7 +85,7 @@ devtools::load_all()
 ```
 
 
-```{r read-raw-datasets, echo=TRUE, warning=FALSE}
+```{r read-raw-datasets, echo=TRUE, message=FALSE, warning=FALSE}
 
 # read in raw .xlsx datasets into R--------------------------------------------
 
@@ -93,3 +95,190 @@ coupon_transactions_raw <- read_raw_xlsx_data("couponTransactions.xlsx")
                                           
  customer_user_raw <- read_raw_xlsx_data("customerUser.xlsx")
 ```
+
+## Exploratory Data Analysis
+
+* Here I am getting to know the data sets after which I will proceed to 
+answering the questions.
+
+```{r exploratory-data-analysis-question-wise}
+
+# exploring coupon_transaction_raw dataset-------------------------------------
+
+View(coupon_transactions_raw)
+
+# getting a basic summary
+skimr::skim(coupon_transactions_raw)
+
+# number of unique customers
+length(unique(coupon_transactions_raw$customerId)) # 14979
+
+# number of unique couponUnlock dates
+length(unique(coupon_transactions_raw$couponUnlockDate)) # 291
+
+# number of unique couponId's
+length(unique(coupon_transactions_raw$couponId)) # 328
+
+
+# exploring customer_scans_raw dataset-----------------------------------------
+
+View(customer_scans_raw)
+
+skimr::skim(customer_scans_raw)
+
+# max amount for billTotal column
+max(customer_scans_raw$billTotal) # why is this too big? look into this.
+
+# number of unique customers
+length(unique(customer_scans_raw$customerId))
+
+# number of unique scan log ids
+length(unique(customer_scans_raw$scanlogId))
+
+# number of unique stores
+length(unique(customer_scans_raw$storeName))
+
+# store with the maximum bill total
+customer_scans_raw %>% 
+  filter(billTotal == max(billTotal)) %>%
+  select(storeName)
+
+# exploring customer_user_raw data---------------------------------------------
+
+View(customer_user_raw)
+
+skimr::skim(customer_user_raw)
+
+# number of unique customers
+unique(length(customer_user_raw$customerId))
+
+# number of unique tierId's 
+length(unique(customer_user_raw$tierId))
+
+# wrapping up exploratory data analysis with a few more queries-----------------
+colnames_for_datasets_list <- list(coup_trans_col = colnames
+                                   (coupon_transactions_raw),
+                                cust_scans_col = colnames(customer_scans_raw), 
+                              cust_user_col = colnames(customer_user_raw))
+
+# one common column between coupon_transactions_raw and customer_scans_raw
+sum(colnames_for_datasets_list[[2]] %in% 
+      colnames_for_datasets_list[[1]])  # customerId
+
+# two common columns between customer_scans_raw and customer_user_raw
+sum(colnames_for_datasets_list[[3]] %in% 
+      colnames_for_datasets_list[[2]]) # customerId, createdAt
+
+# one common column between customer_user_raw and coupon_transactions_raw
+sum(colnames_for_datasets_list[[3]] %in% 
+      colnames_for_datasets_list[[1]]) # customerId
+```
+
+## Pre-processing data
+
+* Given the exploratory data analysis above, we find that the datasets are in a
+tidy format and are relatively clean so no pre-processing is necessary.
+
+&nbsp
+
+&nbsp
+
+&nbsp
+
+
+# Let's get to the answers: 
+
+
+## Code and answer for Q1
+
+* **Question 1**: How many Users have logged in after 1st September 
+2020 till date? How many of those have Signed up in September 2019?
+
+
+* Code
+```{r Q1-code, echo=TRUE, message=FALSE, warning=FALSE}
+
+# number of users who have logged in after 1st September 2021, till date
+
+customer_user_raw_Q1_subset <- customer_user_raw %>%
+  select(customerId, createdAt, lastLogin, tierId) %>%
+  filter(lastLogin > lubridate::as_datetime("2020-09-01")) %>%
+  distinct()
+ 
+customer_user_raw_Q1_subset
+
+ num_users_log_in_after_sep2021 <- customer_user_raw_Q1_subset %>%
+   nrow()                                
+ 
+ num_users_log_in_after_sep2021 # answer to Q1Part-1 = 10,323 users
+
+
+# Of the above 10,323 users, how many signed up in September, 2019.
+
+ num_user_logInAfterSep2021_signedUpInSep2019 <- customer_user_raw_Q1_subset %>%
+  dplyr::filter(lubridate::month(createdAt) == 09) %>%
+   nrow()
+
+ num_user_logInAfterSep2021_signedUpInSep2019 # answer to Q2Part-2 = 5,110 users
+
+```
+
+* **Answer 1 (part 1)**: `r num_users_log_in_after_sep2021` users have logged in
+after 1st September 2021, till date.
+
+* **Answer 1 (part 2)**: Of the `r num_users_log_in_after_sep2021` users from
+part 1 above, `r num_user_logInAfterSep2021_signedUpInSep2019` users have signed
+up in September 2019.
+
+* Please Note: In the absence of a data dictionary describing what each column 
+means, I have made the following assumptions about the columns in the 
+**customer_users_raw** dataset: I have assumed that  the **createdAt** column 
+in the corresponds to the sign_up date column, and the **lastLogin** corresponds
+to the login column. This might seem obvious, but it is still worth mentioning.
+
+&nbsp
+
+&nbsp
+
+&nbsp
+
+## Code and answer for Q2
+
+* **Question 2:** How many users have earned points more than 2000?
+
+```{r Q2-code, echo=TRUE, message=FALSE, warning=FALSE}
+
+# sanity check
+sum(is.na(customer_user_raw$earnedPoints))
+
+# Number of users who have earned points more than 2000
+num_users_earned_points_more_than_2000 <- customer_user_raw %>%
+  dplyr::filter(earnedPoints > 2000) %>% 
+  distinct() %>%
+  nrow()                          
+
+ num_users_earned_points_more_than_2000            # answer to Q2 = 1261
+
+```
+
+* **Answer 2:** `r num_users_earned_points_more_than_2000` users have earned
+points more than 2000
+
+&nbsp
+
+&nbsp
+
+&nbsp
+
+## Code and answer for Q3
+
+* **Question 3: **
+
+```{r Q3-code, echo=TRUE, message=FALSE, warning=FALSE}
+customer_scans_raw %>%
+  filter(customerId == 83)
+
+```
+
+
+

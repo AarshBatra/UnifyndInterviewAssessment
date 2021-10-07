@@ -46,8 +46,8 @@ of the directory.
 
 ## How to use the R Markdown notebook?
 
-You can preview this notebook using the **Preview** button, which will
-show you a rendered HTML copy of the contents of the editor.
+-   You can preview this notebook using the **Preview** button, which
+    will show you a rendered HTML copy of the contents of the editor.
 
 -   The other option is to knit this notebook into a neat PDF, which you
     can do using the **Knit** button.
