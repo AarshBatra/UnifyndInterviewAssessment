@@ -1,0 +1,95 @@
+---
+title: "Unifynd Interview Assessment (Data Analytics) R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+## File Structure 
+
+* To ensure that best practices are followed  (by design), this entire task is executed as a R package. 
+
+* This is why I have shared the entire package directory with you as my submission for this data task.
+
+* In the directory, there is a .RProj (R project file). If you open it in R Studio (R Studio is required for running this), you will have all the relevant environment needed for you to run this R Markdown Notebook (named: unifyndInterviewAssessmentRNotebook.Rmd). Note that this file has a .Rmd extension.
+
+* This R notebook contains all the code, output and answers for all of the 7 questions(and its sub-parts) in the task. This R Notebook (.Rmd file) is present in the root of the package directory. 
+
+* Also all the helper (.R) scripts, other than this .Rmd file, can be found in the **R** sub-directory.
+
+* Just make sure that you have all the R packages (mentioned in the "load_libraries" chunk in this R Notebook below) installed on your system. 
+
+* Also, make sure that your paths are set as per your system. I have used relative paths in the code, but still it is good to have this as a Sanity check before running the code.
+
+* Once you have followed all of the above steps, please continue reading below on how to use this R Notebook.
+
+
+# How to use this R Markdown notebook? 
+
+* You can preview this notebook using the **Preview** button, which will show you   rendered HTML copy of the contents of the editor. 
+
+* The other option is to knit this notebook into a neat PDF, which you can do using the **Knit** button.
+ 
+* Unlike **Knit**, **Preview** does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed. So, when you use **Preview**, please make sure that you have once run all the chunks of code in the editor. Once you run all chunks and then preview, the resulting html output will show all code and all output (plots, tables, etc).
+
+* This notebook contains all code, output and answers, for all of the 7 Questions (and all its sub-parts). By that I mean, it also contain answers to theory questions (ones in which I am asked about my observations and insights, e.g. Q7:part-3).
+
+* I have also attached a complete pre-knitted PDF (with all code, output, answers) in my submission files (along side this .Rmd file).
+
+* Feel free to reach out to me at **aarshbatra.in@gmail.com**/8800592799 if you have any questions or run into any problems. I will quickly troubleshoot it for you.
+
+
+```{r metadata}
+
+# metadata---------------------------------------------------------------------
+# author: Aarsh Batra
+# Start Date: October 07, 2021
+# R version: 4.1.1 (2021-08-10)
+# nickname: Kick Things
+# Platform: x86_64-w64-mingw32 
+# arch: x86_64
+# Running under: Windows 10 x64 (build 18363)
+# R Studio version info: 2021.09.0+351 "Ghost Orchid"
+# e-mail: aarshbatra.in@gmail.com
+
+```
+
+```{r load-libraries}
+
+# load libraries---------------------------------------------------------------
+
+library(tidyverse)
+library(knitr)
+library(devtools)
+library(stringr)
+library(tidyr)
+library(dplyr)
+library(magrittr)
+library(data.table)
+library(lubridate)
+library(roxygen2)
+library(testthat)
+library(ggplot2)
+library(readr)
+library(readxl)
+```
+
+```{r load-entire-package}
+
+# loading the entire package--------------------------------------------------
+
+devtools::load_all()
+
+```
+
+
+```{r read-raw-datasets, echo=TRUE, warning=FALSE}
+
+# read in raw .xlsx datasets into R--------------------------------------------
+
+coupon_transactions_raw <- read_raw_xlsx_data("couponTransactions.xlsx")
+ 
+ customer_scans_raw <- read_raw_xlsx_data("customerScans.xlsx")
+                                          
+ customer_user_raw <- read_raw_xlsx_data("customerUser.xlsx")
+```
