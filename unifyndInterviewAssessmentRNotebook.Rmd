@@ -351,13 +351,45 @@ knitr::kable(coupon_transactions_raw_Q4_subset)
 ## Code and answer for Q5
 
 * **Question 5: ** Create a pivot table as mentioned in the question description
-in the [Question PDF file]("https://github.com/AarshBatra/
+in the [Question PDF file](https://github.com/AarshBatra/
 UnifyndInterviewAssessment/blob/master/
-Interview%20Assignment%20_%20Data%20Analytics.pdf")
+Interview%20Assignment%20_%20Data%20Analytics.pdf)
 
-```{r}
+```{r Q5-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
+
+# sanity checks (for understanding purposes only, these sanity check variables
+# are not used in code)
+foo <- dplyr::left_join(x = coupon_transactions_raw, y = customer_user_raw, by = c("customerId" = "customerId"))
+sum(coupon_transactions_raw$customerId %in% customer_user_raw$customerId)
+sum(!(customer_user_raw$customerId %in% coupon_transactions_raw$customerId))        
+
+foo1Ind <- customer_user_raw$customerId %in% coupon_transactions_raw$customerId
+foo1Val <- customer_user_raw$customerId[foo1Ind]
+nrow(filter(coupon_transactions_raw, customerId %in% foo1Val))
+
+
+# First: inner join the "customer_user_raw" and "coupon_transaction_raw data by 
+# the "customerId" column as a KEY
+
+customer_user_coupon_join_Q5 <- dplyr::left_join(x = customer_user_raw, y = coupon_transactions_raw, by = "customerId")
+
+# create Pivot table, by using tierId  as the "group" column
+pivot_table_by_tier_Q5 <- customer_user_coupon_join_Q5 %>%
+  dplyr::group_by(tierId) %>%
+  dplyr::summarise(numUniqueUsersInEachTier = length(unique(customerId)),
+            totalCouponsUnlocked = sum(!is.na(couponUnlockDate)),
+            averageEarnedPoints = mean(earnedPoints, na.rm = TRUE), 
+            averageBurnedPoints = mean(burnedPoints, na.rm = TRUE))
+
 
 ```
 
+* **Answer 5:** Pivot Table for Q5
+
+```{r Q5-answer-pivot-table }
+knitr::kable(pivot_table_by_tier_Q5)
+```
+
+## Q6
 
 
