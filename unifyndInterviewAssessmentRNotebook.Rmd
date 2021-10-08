@@ -514,9 +514,15 @@ cohort_customers <- coupon_transactions_raw_Q6_subset_unique_finCohort$customerI
 
 ```{r Q6-answer-part1, echo=TRUE, message=FALSE, warning=FALSE}
 
-# dataset: tier distribution of cohort users
+# making sure that we are only using users that satisfy cohort definition
 tier_dist_cohort_users <- customer_user_raw %>%
-  filter(customerId %in% cohort_customers) %>%
+  filter(customerId %in% cohort_customers) 
+
+# removing duplicate rows (if any)
+tier_dist_cohort_users <- tier_dist_cohort_users[!duplicated(tier_dist_cohort_users), ]
+
+# grouping and summarising by tierId
+tier_dist_cohort_users <- tier_dist_cohort_users %>%
   group_by(tierId) %>%
   summarise(countOfUsers = n())
 
@@ -557,9 +563,15 @@ knitr::kable(tier_dist_cohort_users)
 
 ```{r Q6-answer-part2, echo=TRUE, message=FALSE, warning=FALSE}
 
-# dataset: gender distribution of cohort users
+# making sure that we are only using users that satisfy cohort definition
 gender_dist_cohort_users <- customer_user_raw %>%
-  filter(customerId %in% cohort_customers) %>%
+  filter(customerId %in% cohort_customers) 
+
+# removing duplicate rows (if any)
+gender_dist_cohort_users <- gender_dist_cohort_users[!duplicated(gender_dist_cohort_users), ]
+
+# grouping and summarising by gender
+gender_dist_cohort_users <- gender_dist_cohort_users %>%
   group_by(gender) %>%
   summarise(countOfUsers = n())
 
@@ -606,12 +618,20 @@ knitr::kable(gender_dist_cohort_users)
 
 ```{r Q6-answer-part3, echo=TRUE, message=FALSE, warning=FALSE}
 
-# dataset: 5 stores the users scanned the most from
+# making sure that we are only using users that satisfy cohort definition
 cohort_users_5_stores_scanned_most_from <- customer_scans_raw %>% 
-  filter(customerId %in% cohort_customers) %>%
+  filter(customerId %in% cohort_customers) 
+
+# removing duplicate rows (if any)
+cohort_users_5_stores_scanned_most_from <- cohort_users_5_stores_scanned_most_from[!duplicated(cohort_users_5_stores_scanned_most_from), ]
+
+# grouping and summarising by Store name
+cohort_users_5_stores_scanned_most_from <- cohort_users_5_stores_scanned_most_from %>%
   group_by(storeName) %>%
   summarise(scansCount = n()) %>%
   slice_max(scansCount, n = 5)
+
+
 
 # plot: 5 stores the user scanned the most from
 cohort_stores_top5_scanned_most_plot <-  
@@ -646,6 +666,83 @@ knitr::kable(cohort_users_5_stores_scanned_most_from)
 &nbsp;
 
 <hr>
+
+#### **Q6(Part-4):** Which source has the most users coming from in this cohort?
+
+&nbsp;
+
+
+```{r Q6-answer-part4, echo=TRUE, message=FALSE, warning=FALSE}
+
+# making sure that we are only using users that satisfy cohort definition
+cohort_source_users <- customer_user_raw %>% 
+  filter(customerId %in% cohort_customers)
+
+# removing duplicate rows (if any)
+cohort_source_users <- cohort_source_users[!duplicated(cohort_source_users), ]
+
+# grouping and summarizing by "source" column
+cohort_source_users <- cohort_source_users %>%
+  group_by(source) %>%
+  summarise(userCount = n()) 
+
+# Answer table for Q6 Part 4: Which source has the most users coming from?
+cohort_source_most_users_table <- cohort_source_users %>%
+  slice_max(userCount, n = 5)
+
+# plot: Top 5 sources from which most users are coming
+cohort_source_most_users_table_plot <-  
+  cohort_source_most_users_table %>%
+  dplyr::arrange(userCount) %>%
+  ggplot(mapping = aes(x = source, y = userCount)) +
+  geom_col(width = 0.5) +
+  scale_y_continuous(breaks = seq(0, 1800, by = 100)) +
+  geom_text(mapping = aes(label = userCount), position=position_dodge(width=0.9), vjust=-0.25) + ggtitle("Top 5 sources from which most users are coming") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+&nbsp;
+
+#### **Answer: Q6(Part-4):** 
+
+* Below is a table and a bar graph for the top 5 sources from which most of the users are coming in this cohort. 
+
+* The question asks to list the top source from which most users are coming. As is clear from the bar graph below, most of the source information is missing (NA, NULL).
+
+* Instead of removing them from the plot, I have kept these intentionally as I always find it useful to have a visual representation of what is missing from the dataset. Otherwise, many times, it simply gets missed from analysis.
+
+* But, if we ignore the `r filter(cohort_source_most_users_table, is.na(source))$userCount` NA values, and `r filter(cohort_source_most_users_table, source == "NULL")$userCount` NULL values, the source from which the highest number of users are coming is `r cohort_source_most_users_table$source[3]`, with total number of users = `r cohort_source_most_users_table$userCount[3]`.
+
+* So, the answer for Question 6(part-4) is: `r cohort_source_most_users_table$source[3]` is the source from which `r cohort_source_most_users_table$userCount[3]` users are coming.
+
+&nbsp;
+
+```{r Q6-answer-part4-tabGraph, echo=TRUE, message=FALSE, warning=FALSE}
+
+# plot: Top 5 sources from which most users are coming
+cohort_source_most_users_table_plot
+
+# table: Top 5 sources from which most users are coming
+cohort_source_most_users_table
+```
+
+&nbsp;
+
+<hr>
+
+#### **Q6(Part-5):** Observe the behaviour of this cohort and write your observations and insights.
+
+&nbsp;
+
+#### **Answer: Q6(Part-4):** Observations and Insights:
+
+*
+
+&nbsp;
+
+
 
 
 
