@@ -373,8 +373,11 @@ nrow(filter(coupon_transactions_raw, customerId %in% foo1Val))
 
 customer_user_coupon_join_Q5 <- dplyr::left_join(x = customer_user_raw, y = coupon_transactions_raw, by = "customerId")
 
+# removing duplicate rows
+customer_user_coupon_join_Q5_unique <-  customer_user_coupon_join_Q5[!duplicated(customer_user_coupon_join_Q5), ]
+
 # create Pivot table, by using tierId  as the "group" column
-pivot_table_by_tier_Q5 <- customer_user_coupon_join_Q5 %>%
+pivot_table_by_tier_Q5 <- customer_user_coupon_join_Q5_unique %>%
   dplyr::group_by(tierId) %>%
   dplyr::summarise(numUniqueUsersInEachTier = length(unique(customerId)),
             totalCouponsUnlocked = sum(!is.na(couponUnlockDate)),
@@ -401,14 +404,64 @@ answer the following questions:(Scan Count > 4 && Coupon Transaction Count > 2)
   * 4. Which source has the most users coming from in this cohort?
   * 5. Observe the behaviour of this cohort and write your observations and 
        insights.
+
+
+* Getting the number and id's of customers that belong to the cohort whose 
+scanCount > 4 and couponTransactionCount > 2
        
-```{r Q6-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Q6-answer-get-cohort, echo=TRUE, message=FALSE, warning=FALSE}
 
-# get a vector of customerId's that satisfy the cohort conditions
+# get a vector of customerId's that satisfy the cohort conditions--------------
+  
+# customers with scan count > 4
+customer_scans_raw_Q6_subset <- customer_scans_raw %>%
+group_by(customerId) %>%
+summarise(scanCount = sum(!is.na(unique(scanlogId)))) %>%
+filter(scanCount > 4) 
 
+# removing duplicates
+customer_scans_raw_Q6_subset_unique <- customer_scans_raw_Q6_subset[
+  !duplicated(customer_scans_raw_Q6_subset), ]
+
+# For the customers whose scan count is greater than 4, select those whose
+# coupon transaction count > 2.
+
+# creating a subset of data that corresponds to those customers whose 
+# scan count > 4
+coupon_transactions_raw_Q6_subset <- coupon_transactions_raw %>%
+  filter(customerId %in% customer_scans_raw_Q6_subset_unique$customerId) 
+
+# removing any duplicate rows
+coupon_transactions_raw_Q6_subset_unique <-  coupon_transactions_raw_Q6_subset[!duplicated
+            (coupon_transactions_raw_Q6_subset), ]
+
+# dataset containing customers whose "scanCount" > 4 and couponTransactionCount
+# is > 2
+coupon_transactions_raw_Q6_subset_unique %>% 
+  group_by(customerId) %>%
+  summarise(couponTransactionCount = sum(!is.na(couponUnlockDate))) %>%
+  filter(couponTransactionCount > 2)
+
+# putting the cohort customers (that satisfy the cohort definition) into a 
+# vector
+
+cohort_customers <- coupon_transactions_raw_Q6_subset_unique$customerId
 
 
 ```
+
+* Given the above calculations, the cohort whose scanCount > 4 and
+couponTransactionCount > 2, contain a total of `r cohort_customers` customers.
+These customers are stored in the vector named **cohort_customers**. Now, I 
+will use this information to answer parts 1 to 5 of Q6. For each part, I will
+first present the code and then its answer (figure/table/etc).
+
+* **Code and Answer to Question 6: Part-1**
+
+```{r Q6-answer-part1, echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
 
 
 
