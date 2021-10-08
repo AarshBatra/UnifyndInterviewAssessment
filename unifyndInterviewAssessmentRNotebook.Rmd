@@ -251,7 +251,7 @@ to the login column. This might seem obvious, but it is still worth mentioning.
 # sanity check
 sum(is.na(customer_user_raw$earnedPoints))
 
-# Number of users who have earned points more than 2000
+# Number of users who have earnedPoints more than 2000
 num_users_earned_points_more_than_2000 <- customer_user_raw %>%
   dplyr::filter(earnedPoints > 2000) %>% 
   distinct() %>%
@@ -279,18 +279,18 @@ in February 2020?
 customer_scans_raw_Q3_subset <- customer_scans_raw %>%
   filter(customerId == 83, lubridate::month(createdAt) == 02, 
          lubridate::year(createdAt) == 2020) %>%
-  dplyr::select(customerId, storeName, createdAt) %>%
+  dplyr::select(customerId, storeName, createdAt, image) %>%
   dplyr::group_by(storeName) %>%
-  dplyr::summarise(numBillsScanned = n()) %>%
+  dplyr::summarise(numBillsScanned = length(unique(image))) %>%
   dplyr::mutate(customerId = 83, month = "February, 2020") %>%
   dplyr::select(customerId, everything())
 
 ```
 
 * Answer to Q3: Below is a table, which lists the stores from which customer
-id "83" scanned bills in February, 2020. It also lists the total number of bills
-scanned by customer Id "83" for each store. This information is useful in case
-more than one bill is scanned per store. 
+id "83" scanned bills in February, 2020. It also lists the total number of 
+unique bills scanned by customer Id "83" for each store. This information is 
+useful in case more than one bill is scanned per store. 
 
 ```{r Q3-answer-table, echo=TRUE, message=FALSE, warning=FALSE}
 knitr::kable(customer_scans_raw_Q3_subset)
@@ -319,7 +319,7 @@ that date represents, I haven't extracted or used it.
 coupon_transactions_raw_Q4_subset <- coupon_transactions_raw %>%
   filter(couponUnlockDate == lubridate::as_datetime("2020-09-10")) %>%
   group_by(customerId) %>%
-  summarise(numCouponsUnlocked = n()) %>%
+  summarise(numUniqueCouponsUnlocked = length(unique(couponId))) %>%
   mutate(dateOnWhichCouponUnlocked = "September 10, 2020")
 
 num_unique_users_unlocked_coupons_on_Sep102020 <- 
@@ -332,7 +332,7 @@ num_unique_users_unlocked_coupons_on_Sep102020 <-
 users unlocked coupons on September 10, 2021.
 
 * Below presented is a table that lists these unique users and also shows 
-the number of coupons unlocked by each one of them on September 10, 2021.
+the number of unique coupons unlocked by each one of them on September 10, 2021.
 
 ```{r Q4-answer-table, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -390,6 +390,27 @@ pivot_table_by_tier_Q5 <- customer_user_coupon_join_Q5 %>%
 knitr::kable(pivot_table_by_tier_Q5)
 ```
 
-## Q6
+## Q6 Code and answer
+
+* **Question 6:** Create a cohort of users with the following conditions and 
+answer the following questions:(Scan Count > 4 && Coupon Transaction Count > 2)
+
+  * 1. What’s the tier distribution of these users?
+  * 2. What’s the gender distribution of these users?
+  * 3. Which 5 stores have these users scanned the most from?
+  * 4. Which source has the most users coming from in this cohort?
+  * 5. Observe the behaviour of this cohort and write your observations and 
+       insights.
+       
+```{r Q6-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
+
+# get a vector of customerId's that satisfy the cohort conditions
+
+
+
+```
+
+
+
 
 
