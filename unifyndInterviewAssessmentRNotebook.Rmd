@@ -393,7 +393,7 @@ pivot_table_by_tier_Q5 <- customer_user_coupon_join_Q5_unique %>%
 knitr::kable(pivot_table_by_tier_Q5)
 ```
 
-## Q6 Code and answer
+## Code and answer for Q6
 
 * **Question 6:** Create a cohort of users with the following conditions and 
 answer the following questions:(Scan Count > 4 && Coupon Transaction Count > 2)
@@ -451,10 +451,9 @@ cohort_customers <- coupon_transactions_raw_Q6_subset_unique_finCohort$customerI
 ```
 
 * Given the above calculations, the cohort whose scanCount > 4 and
-couponTransactionCount > 2, contain a total of `r cohort_customers` customers.
-These customers are stored in the vector named **cohort_customers**. Now, I 
-will use this information to answer parts 1 to 5 of Q6. For each part, I will
-first present the code and then its answer (figure/table/etc).
+couponTransactionCount > 2, contain a total of `r length(cohort_customers)` customers.These customers are stored in the vector named **cohort_customers**. 
+Now, I will use this information to answer parts 1 to 5 of Q6. For each part, 
+I will first present the code and then its answer (figure/table/etc).
 
 * **Code and Answer to Question 6: Part-1**
 
@@ -462,16 +461,18 @@ first present the code and then its answer (figure/table/etc).
 
 ```{r Q6-answer-part1, echo=TRUE, message=FALSE, warning=FALSE}
 
+# dataset: tier distribution of cohort users
 tier_dist_cohort_users <- customer_user_raw %>%
   filter(customerId %in% cohort_customers) %>%
   group_by(tierId) %>%
-  summarise(count = n())
+  summarise(countOfUsers = n())
 
+# plot: tier distribution of cohort users  
 tier_dist_cohort_users_plot <-  tier_dist_cohort_users %>%
-  ggplot(mapping = aes(x = tierId, y = count)) +
+  ggplot(mapping = aes(x = tierId, y = countOfUsers)) +
   geom_col(width = 0.5) +
   scale_y_continuous(breaks = seq(0, 500, by = 30)) +
-  geom_text(mapping = aes(label = count), position=position_dodge(width=0.9), vjust=-0.25) + ggtitle("Tier distribution of Cohort users") +
+  geom_text(mapping = aes(label = countOfUsers), position=position_dodge(width=0.9), vjust=-0.25) + ggtitle("Tier distribution of Cohort users") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
@@ -481,11 +482,12 @@ tier_dist_cohort_users_plot <-  tier_dist_cohort_users %>%
 distribution of cohort users
 
 ```{r Q6-answer-part1-tabGraph, echo=TRUE, message=FALSE, warning=FALSE}
-# plot
+
+# plot: tier distribution of cohort users
 tier_dist_cohort_users_plot
 
-# table
-tier_dist_cohort_users
+# Table: tier distribution of cohort users
+knitr::kable(tier_dist_cohort_users)
 
 ```
 
@@ -493,16 +495,18 @@ tier_dist_cohort_users
 
 ```{r Q6-answer-part2, echo=TRUE, message=FALSE, warning=FALSE}
 
+# dataset: gender distribution of cohort users
 gender_dist_cohort_users <- customer_user_raw %>%
   filter(customerId %in% cohort_customers) %>%
   group_by(gender) %>%
-  summarise(count = n())
+  summarise(countOfUsers = n())
 
+# plot: gender distribution of cohort users
 gender_dist_cohort_users_plot <-  gender_dist_cohort_users %>%
-  ggplot(mapping = aes(x = gender, y = count)) +
+  ggplot(mapping = aes(x = gender, y = countOfUsers)) +
   geom_col(width = 0.5) +
   scale_y_continuous(breaks = seq(0, 500, by = 30)) +
-  geom_text(mapping = aes(label = count), position=position_dodge(width=0.9), vjust=-0.25) + ggtitle("Gender distribution of Cohort users") +
+  geom_text(mapping = aes(label = countOfUsers), position=position_dodge(width=0.9), vjust=-0.25) + ggtitle("Gender distribution of Cohort users") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
@@ -510,16 +514,66 @@ gender_dist_cohort_users_plot <-  gender_dist_cohort_users %>%
 ```
 
 **Answer: Q6(Part-2): Below is a table and a bar graph of of the gender
-distribution of cohort users
+distribution of cohort users.
+
+* Please note: In this cohort, of the total `r length(cohort_customers)` there 
+are `r nrow(customer_user_raw %>% filter(customerId %in% cohort_customers, gender == "NULL"))` customers whose 
+value for gender column is "NULL" in the dataset. Also, there are 
+`r nrow(customer_user_raw %>% filter(customerId %in% cohort_customers, is.na(gender)))` customers whose value for the gender column is "NA". In the 
+gender distribution below (both in table and in graph), I have kept them, 
+instead of filtering them out, as it is good to have a visual representation 
+of these missing values.
+
 
 ```{r Q6-answer-part2-tabGraph, echo=TRUE, message=FALSE, warning=FALSE}
-# plot
+
+# plot: gender distribution of cohort users
 gender_dist_cohort_users_plot
 
-# table
-gender_dist_cohort_users
+# table: gender distribution of cohort users
+knitr::kable(gender_dist_cohort_users)
 
 ```
+
+* **Q6(Part-3):** Which 5 stores have these users scanned the most from?
+
+```{r Q6-answer-part3, echo=TRUE, message=FALSE, warning=FALSE}
+
+# dataset: 5 stores the users scanned the most from
+cohort_users_5_stores_scanned_most_from <- customer_scans_raw %>% 
+  filter(customerId %in% cohort_customers) %>%
+  group_by(storeName) %>%
+  summarise(scansCount = n()) %>%
+  slice_max(scansCount, n = 5)
+
+# plot: 5 stores the user scanned the most from
+cohort_stores_top5_scanned_most_plot <-  
+  cohort_users_5_stores_scanned_most_from %>%
+  dplyr::arrange(scansCount) %>%
+  ggplot(mapping = aes(x = storeName, y = scansCount)) +
+  geom_col(width = 0.5) +
+  scale_y_continuous(breaks = seq(0, 1800, by = 100)) +
+  geom_text(mapping = aes(label = scansCount), position=position_dodge(width=0.9), vjust=-0.25) + ggtitle("5 stores users scanned most from") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+**Answer: Q6(Part-2): Below is a table and a bar graph for the 5 stores from
+which the cohort users scanned the most.
+
+```{r Q6-answer-part3-tabGraph, echo=TRUE, message=FALSE, warning=FALSE}
+
+# plot: 5 stores customers scanned most from
+cohort_stores_top5_scanned_most_plot
+
+# table: 5 stores customers scanned most from
+knitr::kable(cohort_users_5_stores_scanned_most_from)
+
+
+```
+
+
 
 
 
