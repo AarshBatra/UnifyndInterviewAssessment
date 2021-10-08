@@ -196,7 +196,7 @@ tidy format and are relatively clean so no pre-processing is necessary.
 
 
 * Code
-```{r Q1-code, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Q1-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 
 # number of users who have logged in after 1st September 2021, till date
 
@@ -246,7 +246,7 @@ to the login column. This might seem obvious, but it is still worth mentioning.
 
 * **Question 2:** How many users have earned points more than 2000?
 
-```{r Q2-code, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Q2-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 
 # sanity check
 sum(is.na(customer_user_raw$earnedPoints))
@@ -275,7 +275,7 @@ points more than 2000
 * **Question 3: ** From which stores has customer id ‘83’ scanned bills
 in February 2020?
 
-```{r Q3-code, echo=TRUE, message=FALSE, warning=FALSE}
+```{r Q3-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 customer_scans_raw_Q3_subset <- customer_scans_raw %>%
   filter(customerId == 83, lubridate::month(createdAt) == 02, 
          lubridate::year(createdAt) == 2020) %>%
@@ -296,9 +296,68 @@ more than one bill is scanned per store.
 knitr::kable(customer_scans_raw_Q3_subset)
 ```
 
+* Please Note: In the absence of a data dictionary describing what each column 
+means, I have made the following assumptions about the columns in the 
+**customer_scans_raw** dataset: I have assumed that  the **createdAt** column 
+in this dataset corresponds to the date at which the scan was created, and the 
+**billDate** column corresponds to date on which the bill was generated. 
+Also, there is a date within the image file names, because we do not know, what
+that date represents, I haven't extracted or used it.
+
+&nbsp
+
+&nbsp
+
+&nbsp
+
+
 ## Code and answer for Q4 
 
 **Question 4**: How many unique users unlocked coupons on 10th September 2020?
+
+```{r Q4-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
+coupon_transactions_raw_Q4_subset <- coupon_transactions_raw %>%
+  filter(couponUnlockDate == lubridate::as_datetime("2020-09-10")) %>%
+  group_by(customerId) %>%
+  summarise(numCouponsUnlocked = n()) %>%
+  mutate(dateOnWhichCouponUnlocked = "September 10, 2020")
+
+num_unique_users_unlocked_coupons_on_Sep102020 <- 
+  nrow(coupon_transactions_raw_Q4_subset)     # answer to Q4 = 34 unique users.
+
+
+```
+
+* **Answer to Q4:** `r num_unique_users_unlocked_coupons_on_Sep102020` unique
+users unlocked coupons on September 10, 2021.
+
+* Below presented is a table that lists these unique users and also shows 
+the number of coupons unlocked by each one of them on September 10, 2021.
+
+```{r Q4-answer-table, echo=TRUE, message=FALSE, warning=FALSE}
+
+knitr::kable(coupon_transactions_raw_Q4_subset)
+
+```
+
+
+&nbsp
+
+&nbsp
+
+&nbsp
+
+
+## Code and answer for Q5
+
+* **Question 5: ** Create a pivot table as mentioned in the question description
+in the [Question PDF file]("https://github.com/AarshBatra/
+UnifyndInterviewAssessment/blob/master/
+Interview%20Assignment%20_%20Data%20Analytics.pdf")
+
+```{r}
+
+```
 
 
 
