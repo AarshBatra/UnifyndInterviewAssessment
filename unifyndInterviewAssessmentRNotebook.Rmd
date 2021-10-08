@@ -5,7 +5,15 @@ output:
     df_print: paged
 ---
 
-# File Structure 
+&nbsp;
+
+&nbsp;
+
+<hr>
+
+&nbsp;
+
+## File Structure
 
 * To ensure that best practices are followed  (by design), this entire task is executed as a R package. 
 
@@ -23,8 +31,11 @@ output:
 
 * Once you have followed all of the above steps, please continue reading below on how to use this R Notebook.
 
+&nbsp;
 
-# How to use this R Markdown notebook? 
+<hr>
+
+## How to use this R Markdown notebook? 
 
 * You can preview this notebook using the **Preview** button, which will show you rendered HTML copy of the contents of the editor. 
 
@@ -38,6 +49,11 @@ output:
 
 * Feel free to reach out to me at **aarshbatra.in@gmail.com**/8800592799 if you have any questions or run into any problems. I will quickly troubleshoot it for you.
 
+&nbsp;
+
+<hr>
+
+## Initial Setup
 
 ```{r metadata, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -96,64 +112,74 @@ coupon_transactions_raw <- read_raw_xlsx_data("couponTransactions.xlsx")
  customer_user_raw <- read_raw_xlsx_data("customerUser.xlsx")
 ```
 
+&nbsp;
+
+<hr>
+
 ## Exploratory Data Analysis
 
-* Here I am getting to know the data sets after which I will proceed to 
-answering the questions.
+* First, I will explore the dataset after which I will proceed to
+answering the questions. Everything inside the below chunk of code is for exploration only. I have commented out most of the exploratory code, if you'd like to see what it does, you may uncomment it. None of the variable from the below chunk exploratory code are used after this chunk of code. Still, I have included some of the main exploratory code output below. 
+
+&nbsp;
 
 ```{r exploratory-data-analysis-question-wise}
 
 # exploring coupon_transaction_raw dataset-------------------------------------
 
-View(coupon_transactions_raw)
+# View(coupon_transactions_raw)
 
 # getting a basic summary
 skimr::skim(coupon_transactions_raw)
 
-# number of unique customers
-length(unique(coupon_transactions_raw$customerId)) # 14979
-
-# number of unique couponUnlock dates
-length(unique(coupon_transactions_raw$couponUnlockDate)) # 291
-
-# number of unique couponId's
-length(unique(coupon_transactions_raw$couponId)) # 328
+# # number of unique customers
+#   length(unique(coupon_transactions_raw$customerId)) # 14979
+# 
+# # number of unique couponUnlock dates
+#   length(unique(coupon_transactions_raw$couponUnlockDate)) # 291
+# 
+# # number of unique couponId's
+# length(unique(coupon_transactions_raw$couponId)) # 328
 
 
 # exploring customer_scans_raw dataset-----------------------------------------
 
-View(customer_scans_raw)
+# View(customer_scans_raw)
 
+# skim customer_scans_raw dataset
 skimr::skim(customer_scans_raw)
 
-# max amount for billTotal column
-max(customer_scans_raw$billTotal) # why is this too big? look into this.
-
-# number of unique customers
-length(unique(customer_scans_raw$customerId))
-
-# number of unique scan log ids
-length(unique(customer_scans_raw$scanlogId))
-
-# number of unique stores
-length(unique(customer_scans_raw$storeName))
-
-# store with the maximum bill total
-customer_scans_raw %>% 
-  filter(billTotal == max(billTotal)) %>%
-  select(storeName)
+# # max amount for billTotal column
+# max(customer_scans_raw$billTotal) # why is this too big? look into this.
+# 
+# # number of unique customers
+# length(unique(customer_scans_raw$customerId))
+# 
+# # number of unique scan log ids
+# length(unique(customer_scans_raw$scanlogId))
+# 
+# # number of unique stores
+# length(unique(customer_scans_raw$storeName))
+# 
+# # store with the maximum bill total
+# customer_scans_raw %>% 
+#   filter(billTotal == max(billTotal)) %>%
+#   select(storeName)
+# 
 
 # exploring customer_user_raw data---------------------------------------------
 
-View(customer_user_raw)
+# View(customer_user_raw)
 
+# skim customer_user_raw dataset
 skimr::skim(customer_user_raw)
 
-# number of unique customers
-unique(length(customer_user_raw$customerId))
-
-# number of unique tierId's 
-length(unique(customer_user_raw$tierId))
+# # number of unique customers
+# unique(length(customer_user_raw$customerId))
+# 
+# # number of unique tierId's 
+# length(unique(customer_user_raw$tierId))
+# 
 
 # wrapping up exploratory data analysis with a few more queries-----------------
 colnames_for_datasets_list <- list(coup_trans_col = colnames
@@ -173,29 +199,33 @@ sum(colnames_for_datasets_list[[3]] %in%
 sum(colnames_for_datasets_list[[3]] %in% 
       colnames_for_datasets_list[[1]]) # customerId
 ```
+&nbsp;
+
+<hr>
 
 ## Pre-processing data
 
 * Given the exploratory data analysis above, we find that the datasets are in a
 tidy format and are relatively clean so no pre-processing is necessary.
 
-&nbsp
+&nbsp;
 
-&nbsp
+<hr>
 
-&nbsp
+## Let's get to the answers:
 
+&nbsp;
 
-# Let's get to the answers: 
+### Code and answer for Q1
 
+#### **Question 1**: How many Users have logged in after 1st September 2020 till date? How many of those have Signed up in September 2019?
 
-## Code and answer for Q1
+&nbsp;
 
-* **Question 1**: How many Users have logged in after 1st September 
-2020 till date? How many of those have Signed up in September 2019?
+#### Code
 
+&nbsp;
 
-* Code
 ```{r Q1-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 
 # number of users who have logged in after 1st September 2021, till date
@@ -223,12 +253,15 @@ customer_user_raw_Q1_subset
 
 ```
 
-* **Answer 1 (part 1)**: `r num_users_log_in_after_sep2021` users have logged in
-after 1st September 2021, till date.
+&nbsp;
 
-* **Answer 1 (part 2)**: Of the `r num_users_log_in_after_sep2021` users from
-part 1 above, `r num_user_logInAfterSep2021_signedUpInSep2019` users have signed
-up in September 2019.
+#### **Answer 1 (part 1)**: `r num_users_log_in_after_sep2021` users have logged in after 1st September 2021, till date.
+
+&nbsp;
+
+#### **Answer 1 (part 2)**: Of the `r num_users_log_in_after_sep2021` users from part 1 above, `r num_user_logInAfterSep2021_signedUpInSep2019` users have signed up in September 2019.
+
+&nbsp;
 
 * Please Note: In the absence of a data dictionary describing what each column 
 means, I have made the following assumptions about the columns in the 
@@ -236,15 +269,17 @@ means, I have made the following assumptions about the columns in the
 in the corresponds to the sign_up date column, and the **lastLogin** corresponds
 to the login column. This might seem obvious, but it is still worth mentioning.
 
-&nbsp
+&nbsp;
 
-&nbsp
+<hr>
 
-&nbsp
+### Code and answer for Q2
 
-## Code and answer for Q2
+&nbsp;
 
-* **Question 2:** How many users have earned points more than 2000?
+#### **Question 2:** How many users have earned points more than 2000?
+
+&nbsp;
 
 ```{r Q2-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -260,20 +295,21 @@ num_users_earned_points_more_than_2000 <- customer_user_raw %>%
  num_users_earned_points_more_than_2000            # answer to Q2 = 1261
 
 ```
+&nbsp;
 
-* **Answer 2:** `r num_users_earned_points_more_than_2000` users have earned
-points more than 2000
+#### **Answer 2:** `r num_users_earned_points_more_than_2000` users have earned points more than 2000.
 
-&nbsp
+&nbsp;
 
-&nbsp
+<hr>
 
-&nbsp
+### Code and answer for Q3
 
-## Code and answer for Q3
+&nbsp;
 
-* **Question 3: ** From which stores has customer id ‘83’ scanned bills
-in February 2020?
+#### **Question 3: ** From which stores has customer id ‘83’ scanned bills in February 2020?
+
+&nbsp;
 
 ```{r Q3-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 customer_scans_raw_Q3_subset <- customer_scans_raw %>%
@@ -287,14 +323,17 @@ customer_scans_raw_Q3_subset <- customer_scans_raw %>%
 
 ```
 
-* Answer to Q3: Below is a table, which lists the stores from which customer
-id "83" scanned bills in February, 2020. It also lists the total number of 
-unique bills scanned by customer Id "83" for each store. This information is 
-useful in case more than one bill is scanned per store. 
+&nbsp;
+
+#### **Answer to Q3:** Below is a table, which lists the stores from which customer id "83" scanned bills in February, 2020. It also lists the total number of unique bills scanned by customer Id "83" for each store. This information is useful in case more than one bill is scanned per store. 
+
+&nbsp;
 
 ```{r Q3-answer-table, echo=TRUE, message=FALSE, warning=FALSE}
 knitr::kable(customer_scans_raw_Q3_subset)
 ```
+
+&nbsp;
 
 * Please Note: In the absence of a data dictionary describing what each column 
 means, I have made the following assumptions about the columns in the 
@@ -304,16 +343,17 @@ in this dataset corresponds to the date at which the scan was created, and the
 Also, there is a date within the image file names, because we do not know, what
 that date represents, I haven't extracted or used it.
 
-&nbsp
+&nbsp;
 
-&nbsp
+<hr>
 
-&nbsp
+### Code and answer for Q4 
 
+&nbsp;
 
-## Code and answer for Q4 
+#### **Question 4**: How many unique users unlocked coupons on 10th September 2020?
 
-**Question 4**: How many unique users unlocked coupons on 10th September 2020?
+&nbsp;
 
 ```{r Q4-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 coupon_transactions_raw_Q4_subset <- coupon_transactions_raw %>%
@@ -328,11 +368,11 @@ num_unique_users_unlocked_coupons_on_Sep102020 <-
 
 ```
 
-* **Answer to Q4:** `r num_unique_users_unlocked_coupons_on_Sep102020` unique
-users unlocked coupons on September 10, 2021.
+&nbsp;
 
-* Below presented is a table that lists these unique users and also shows 
-the number of unique coupons unlocked by each one of them on September 10, 2021.
+#### **Answer to Q4:** `r num_unique_users_unlocked_coupons_on_Sep102020` unique users unlocked coupons on September 10, 2021. Below presented is a table that lists these unique users and also shows the number of unique coupons unlocked by each one of them on September 10, 2021.
+
+&nbsp;
 
 ```{r Q4-answer-table, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -340,20 +380,17 @@ knitr::kable(coupon_transactions_raw_Q4_subset)
 
 ```
 
+&nbsp;
 
-&nbsp
+<hr>
 
-&nbsp
+### Code and answer for Q5
 
-&nbsp
+&nbsp;
 
+#### **Question 5: ** Create a pivot table as mentioned in the question description in the [Question PDF file](https://github.com/AarshBatra/UnifyndInterviewAssessment/blob/master/Interview%20Assignment%20_%20Data%20Analytics.pdf)
 
-## Code and answer for Q5
-
-* **Question 5: ** Create a pivot table as mentioned in the question description
-in the [Question PDF file](https://github.com/AarshBatra/
-UnifyndInterviewAssessment/blob/master/
-Interview%20Assignment%20_%20Data%20Analytics.pdf)
+&nbsp;
 
 ```{r Q5-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -387,16 +424,23 @@ pivot_table_by_tier_Q5 <- customer_user_coupon_join_Q5_unique %>%
 
 ```
 
-* **Answer 5:** Pivot Table for Q5
+&nbsp;
+
+#### **Answer 5:** Pivot Table for Q5
+
+&nbsp;
 
 ```{r Q5-answer-pivot-table }
 knitr::kable(pivot_table_by_tier_Q5)
 ```
 
-## Code and answer for Q6
+&nbsp;
 
-* **Question 6:** Create a cohort of users with the following conditions and 
-answer the following questions:(Scan Count > 4 && Coupon Transaction Count > 2)
+<hr>
+
+### Code and answer for Q6
+
+#### **Question 6:** Create a cohort of users with the following conditions (Scan Count > 4 && Coupon Transaction Count > 2) and answer the following questions:
 
   * 1. What’s the tier distribution of these users?
   * 2. What’s the gender distribution of these users?
@@ -405,9 +449,11 @@ answer the following questions:(Scan Count > 4 && Coupon Transaction Count > 2)
   * 5. Observe the behaviour of this cohort and write your observations and 
        insights.
 
+&nbsp;
 
-* Getting the number and id's of customers that belong to the cohort whose 
-scanCount > 4 and couponTransactionCount > 2
+#### Getting the number and id's of customers that belong to the cohort whose scanCount > 4 and couponTransactionCount > 2
+
+&nbsp;
        
 ```{r Q6-answer-get-cohort, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -450,14 +496,21 @@ cohort_customers <- coupon_transactions_raw_Q6_subset_unique_finCohort$customerI
 
 ```
 
-* Given the above calculations, the cohort whose scanCount > 4 and
-couponTransactionCount > 2, contain a total of `r length(cohort_customers)` customers.These customers are stored in the vector named **cohort_customers**. 
-Now, I will use this information to answer parts 1 to 5 of Q6. For each part, 
-I will first present the code and then its answer (figure/table/etc).
+&nbsp;
 
-* **Code and Answer to Question 6: Part-1**
+#### Given the above calculations, the cohort whose scanCount > 4 and couponTransactionCount > 2, contain a total of `r length(cohort_customers)` customers.These customers are stored in the vector named **cohort_customers**. Now, I will use this information to answer parts 1 to 5 of Q6. For each part, I will first present the code and then its answer (figure/table/etc).
 
-* **Q6(Part-1):** What is the tier distribution of Cohort users?
+&nbsp;
+
+<hr>
+
+#### **Code and Answer to Question 6: Part-1**
+
+&nbsp;
+
+#### **Q6(Part-1):** What is the tier distribution of Cohort users?
+
+&nbsp;
 
 ```{r Q6-answer-part1, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -478,8 +531,11 @@ tier_dist_cohort_users_plot <-  tier_dist_cohort_users %>%
 
 ```
 
-**Answer: Q6(Part-1): Below is a table and a bar graph of of the tier 
-distribution of cohort users
+&nbsp;
+
+#### **Answer: Q6(Part-1):** Below is a table and a bar graph of of the tier distribution of cohort users
+
+&nbsp;
 
 ```{r Q6-answer-part1-tabGraph, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -491,7 +547,13 @@ knitr::kable(tier_dist_cohort_users)
 
 ```
 
-* **Q6(Part-2):** What the gender distribution of Cohort users?
+&nbsp;
+
+<hr>
+
+#### **Q6(Part-2):** What the gender distribution of Cohort users?
+
+&nbsp;
 
 ```{r Q6-answer-part2, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -513,17 +575,16 @@ gender_dist_cohort_users_plot <-  gender_dist_cohort_users %>%
 
 ```
 
-**Answer: Q6(Part-2): Below is a table and a bar graph of of the gender
-distribution of cohort users.
+&nbsp;
 
-* Please note: In this cohort, of the total `r length(cohort_customers)` there 
-are `r nrow(customer_user_raw %>% filter(customerId %in% cohort_customers, gender == "NULL"))` customers whose 
-value for gender column is "NULL" in the dataset. Also, there are 
-`r nrow(customer_user_raw %>% filter(customerId %in% cohort_customers, is.na(gender)))` customers whose value for the gender column is "NA". In the 
-gender distribution below (both in table and in graph), I have kept them, 
-instead of filtering them out, as it is good to have a visual representation 
+<hr>
+
+#### **Answer: Q6(Part-2):** Below is a table and a bar graph of of the gender distribution of cohort users.
+
+* Please note: In this cohort, of the total `r length(cohort_customers)` there are `r nrow(customer_user_raw %>% filter(customerId %in% cohort_customers, gender == "NULL"))` customers whose value for gender column is "NULL" in the dataset. Also, there are `r nrow(customer_user_raw %>% filter(customerId %in% cohort_customers, is.na(gender)))` customers whose value for the gender column is "NA". In the gender distribution below (both in table and in graph), I have kept them, instead of filtering them out, as it is good to have a visual representation 
 of these missing values.
 
+&nbsp;
 
 ```{r Q6-answer-part2-tabGraph, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -535,7 +596,13 @@ knitr::kable(gender_dist_cohort_users)
 
 ```
 
-* **Q6(Part-3):** Which 5 stores have these users scanned the most from?
+&nbsp;
+
+<hr>
+
+#### **Q6(Part-3):** Which 5 stores have these users scanned the most from?
+
+&nbsp;
 
 ```{r Q6-answer-part3, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -559,8 +626,11 @@ cohort_stores_top5_scanned_most_plot <-
 
 ```
 
-**Answer: Q6(Part-2): Below is a table and a bar graph for the 5 stores from
-which the cohort users scanned the most.
+&nbsp;
+
+#### **Answer: Q6(Part-3):** Below is a table and a bar graph for the 5 stores from which the cohort users scanned the most.
+
+&nbsp;
 
 ```{r Q6-answer-part3-tabGraph, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -573,7 +643,9 @@ knitr::kable(cohort_users_5_stores_scanned_most_from)
 
 ```
 
+&nbsp;
 
+<hr>
 
 
 
