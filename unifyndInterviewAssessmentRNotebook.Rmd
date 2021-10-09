@@ -356,7 +356,11 @@ that date represents, I haven't extracted or used it.
 &nbsp;
 
 ```{r Q4-answer-code, echo=TRUE, message=FALSE, warning=FALSE}
-coupon_transactions_raw_Q4_subset <- coupon_transactions_raw %>%
+
+# creating a coupon_transactions_raw with duplicate rows removed
+coupon_transactions_raw_unique <- coupon_transactions_raw[!duplicated(coupon_transactions_raw), ]
+
+coupon_transactions_raw_Q4_subset <- coupon_transactions_raw_unique %>%
   filter(couponUnlockDate == lubridate::as_datetime("2020-09-10")) %>%
   group_by(customerId) %>%
   summarise(numUniqueCouponsUnlocked = length(unique(couponId))) %>%
@@ -405,10 +409,9 @@ foo1Val <- customer_user_raw$customerId[foo1Ind]
 nrow(filter(coupon_transactions_raw, customerId %in% foo1Val))
 
 
-# First: inner join the "customer_user_raw" and "coupon_transaction_raw data by 
-# the "customerId" column as a KEY
+# First: left_join the "customer_user_raw" and "coupon_transaction_raw_unique" data by the "customerId" column as a KEY
 
-customer_user_coupon_join_Q5 <- dplyr::left_join(x = customer_user_raw, y = coupon_transactions_raw, by = "customerId")
+customer_user_coupon_join_Q5 <- dplyr::left_join(x = customer_user_raw, y = coupon_transactions_raw_unique, by = "customerId")
 
 # removing duplicate rows
 customer_user_coupon_join_Q5_unique <-  customer_user_coupon_join_Q5[!duplicated(customer_user_coupon_join_Q5), ]
@@ -524,7 +527,8 @@ tier_dist_cohort_users <- tier_dist_cohort_users[!duplicated(tier_dist_cohort_us
 # grouping and summarising by tierId
 tier_dist_cohort_users <- tier_dist_cohort_users %>%
   group_by(tierId) %>%
-  summarise(countOfUsers = n())
+  summarise(countOfUsers = n()) %>%
+  mutate(percentOfUsers = (countOfUsers/sum(countOfUsers, na.rm = TRUE))*100)
 
 # plot: tier distribution of cohort users  
 tier_dist_cohort_users_plot <-  tier_dist_cohort_users %>%
@@ -573,7 +577,8 @@ gender_dist_cohort_users <- gender_dist_cohort_users[!duplicated(gender_dist_coh
 # grouping and summarising by gender
 gender_dist_cohort_users <- gender_dist_cohort_users %>%
   group_by(gender) %>%
-  summarise(countOfUsers = n())
+  summarise(countOfUsers = n()) %>%
+  mutate(percentOfUsers = (countOfUsers/sum(countOfUsers, na.rm = TRUE))*100)
 
 # plot: gender distribution of cohort users
 gender_dist_cohort_users_plot <-  gender_dist_cohort_users %>%
@@ -628,8 +633,9 @@ cohort_users_5_stores_scanned_most_from <- cohort_users_5_stores_scanned_most_fr
 # grouping and summarising by Store name
 cohort_users_5_stores_scanned_most_from <- cohort_users_5_stores_scanned_most_from %>%
   group_by(storeName) %>%
-  summarise(scansCount = n()) %>%
-  slice_max(scansCount, n = 5)
+  summarise(scansCount = n()) %>% 
+  slice_max(scansCount, n = 5) %>%
+  mutate(scansPercentage = (scansCount/sum(scansCount, na.rm = TRUE))*100)
 
 
 
@@ -684,7 +690,8 @@ cohort_source_users <- cohort_source_users[!duplicated(cohort_source_users), ]
 # grouping and summarizing by "source" column
 cohort_source_users <- cohort_source_users %>%
   group_by(source) %>%
-  summarise(userCount = n()) 
+  summarise(userCount = n()) %>%
+  mutate(userPercentage = (userCount/sum(userCount, na.rm = TRUE))*100)
 
 # Answer table for Q6 Part 4: Which source has the most users coming from?
 cohort_source_most_users_table <- cohort_source_users %>%
@@ -732,15 +739,179 @@ cohort_source_most_users_table
 
 <hr>
 
+#### A few other graphs to help better understand Q6:
+
+&nbsp;
+
+```{r Q6-extra-graphs, echo=TRUE, message=FALSE, warning=FALSE}
+
+foo_user_tmp <- customer_user_raw %>%
+  filter(customerId %in% cohort_customers)
+
+foo_scans_tmp <- customer_scans_raw %>%
+  filter(customerId %in% cohort_customers,
+         storeName %in% cohort_users_5_stores_scanned_most_from$storeName)
+
+
+# gender distribution within tiers
+foo_user_tmp %>% 
+  ggplot(mapping = aes(x = tierId, fill = gender)) +
+  geom_bar(position = "dodge") + 
+  ggtitle("gender distribution within tiers")
+
+# billTotal distribution for top 5 stores users scanned most from
+foo_scans_tmp %>% 
+  ggplot(mapping = aes(x = storeName, y = billTotal)) +
+  scale_y_log10() +
+  geom_boxplot() + 
+  xlab("log10(billTotal)") +
+  ggtitle("log10(billTotal) distribution for top 5 stores users scanned most from")
+
+  
+```
+
+
+&nbsp;
+
+<hr>
+
 #### **Q6(Part-5):** Observe the behaviour of this cohort and write your observations and insights.
 
 &nbsp;
 
-#### **Answer: Q6(Part-4):** Observations and Insights:
+#### **Answer: Q6(Part-5):** Observations and Insights:
 
-*
+* In this cohort, more than 75% of the total number of users live in tier-2 alone. 86% of the users live in tier-1 and tier-2 combined. 98% of the users live in tier-1, tier-2 and tier-3 combined. Almost no one lives in Tier-4 and Tier-5. This shows that this particular cohort mostly resides in Urban high population centers. **[Refer: Tier distribution of Cohort users plot]**.
+
+* Around 70% of the users in this cohort are Males and 30% females. But, almost 15% of data on 'gender' is missing (either NA, or NULL). **[Refer: Gender distribution of cohort users plot]**.
+  
+  *The sex ratio for India according to [this article](https://www.census2011.co.in/sexratio.php) is 1.06 males for every 1 female. This means that for every 1000 females there are 1060 males. 
+  
+  * The sex ratio in our cohort (with missing gender data) is 2.47 males for 1 female, which would mean that for every 1000 females, there are 2,470 males. That does not seem right. Gender gap will probably decrease if missing data becomes available.
+  
+* Almost all of the missing data, comes from either tier-1, tier-2 or tier-3. This makes sense as that is where most of the users reside. **[Refer: Gender distribution within tiers plot]**
+
+* Gender gap within tiers is similar to the gender gap in the  overall data. But, as mentioned earlier, this is probably because a lot of data on gender is missing. **[Refer: Gender distribution within tiers plot]**
+
+* Users scanned the most from Big Bazaar. Of the total number of scans count in the top 5 stores (from which users scanned the most), more than half of those scans are for Big Bazaar. The next big chunk is taken by the Lifestyle store, followed by Luxe, Latt Liv and Miniso. **[Refer: 5 stores users scanned most from plot]**
+
+* Big Bazaar and Lifestyle probably being the most pocket friendly, were the ones that users scanned the most. But, for more expensive (relatively) stores like Luxe, Miniso, Latt Liv we see lesser number of scans (compared to Big Bazaar). **[Ref: 5 stores users scanned most from plot]**
+
+* The source from which most users are coming is NPBPROMO3, the next best top sources also are versions of this NPBPROMO class. This means that these are probably the best places for shop owners to invest their money in to attract customers.**[Refer: Top 5 sources from which most users are coming]**
+
+* **[Refer: billTotal distribution for top 5 stores users scanned most from]**
+ 
+  * We see that average values for billTotal for all stores is approximately the same. For big bazaar the average is the lowest, which is expected.
+  
+  * There is a high amount of variation in the distribution of billTotal for both Big Bazaar and Lifestyle. This is probably because of the variety of products they sell. That also explains the most number of bills being scanned in these stores, as they attract people from all tiers.
+  
+  * Their is very little amount of variation in the billTotal of Miniso store, which probably hints at the streamlined product lines that it has for people who can afford to spend more, probably mostly tier-1 and tier-2 people.
+  
+  * In all stores, except Luxe, there is small amount if variation around the average, or in other words, the Inter Quartile Range is small. This tells us that, except for Luxe (which has a large amount of variation in its billTotal), all other stores have billTotals that stay close to the average billTotal amount.
+
 
 &nbsp;
+
+<hr>
+
+### Code and answer for Q7
+
+#### **Question 7:** Month on Month comparison:
+
+* 1) From the given tables derive this table(execute joins with other  tables if      required).
+  
+* 2) Analyse the change in September Vs October and highlight/mention the            highest changes for each tier
+  
+* 3) Observe the metrics and write your observations and insights
+
+&nbsp;
+
+#### **Code and Answer to Question 7: Part-1**
+
+&nbsp;
+
+&nbsp;
+
+#### **Q7(Part-1):** From the given tables derive this table(execute joins with other tables if required)
+
+#### Code
+
+```{r Q7-answer-part1, echo=TRUE, message=FALSE, warning=FALSE}
+
+# sanity checks
+sum(customer_scans_raw$customerId %in%
+  customer_user_raw$customerId) == length(customer_scans_raw$customerId)
+
+sum(customer_user_raw$customerId %in%
+  customer_scans_raw$customerId)
+
+# performing a left-join and combining the "customer_user_raw" data with "customer_scans_raw data" 
+
+customer_user_scans_join_Q7 <- dplyr::left_join(
+  select(customer_user_raw, -createdAt), customer_scans_raw, by = "customerId")
+
+# removing duplicate rows (if any) unlikely that we will see duplicate rows here as there are a lot of columns
+customer_user_scans_join_Q7 <- customer_user_scans_join_Q7[!duplicated(customer_user_scans_join_Q7), ]
+
+# adding 2 columns, a month and a year column to the customer_user_scans_join_Q7 dataset------------------------------------------------------------------------ 
+
+# we will derive these column is derived from the "createdAt" column of the joined dataset. The "createdAt" column in the joined dataset, contains the date at which the scan was created.
+
+# Note that, there was a "createdAt" column in the customer_user_raw dataset, # although the name is the same, that refers to the date at which the customer signed up. To avoid confusion, I removed that column, while joining rhe dataset. 
+# So, the "createdAt" in the joined dataset, corresponds to the "createdAt" column of the "customer_scans_raw" data. It should be interpreted as, it would have been interpreted in the scans dataset, i.e. it is the date at which the scan was created.
+
+# From this column, I will derive two new columns and add it to the joined data set before.
+
+customer_user_scans_join_Q7 <- customer_user_scans_join_Q7 %>%
+  mutate(scanCreatedMonth = lubridate::month(createdAt), 
+         scanCreatedYear = lubridate::year(createdAt))
+
+# left_join customer_user_scans_join_Q7 dataset with coupon_transactions_raw_unique
+
+
+
+# Create parts of table separately and then bind them together-----------------
+
+# Unique users (by TierId) who scanned in Sep 2020
+uniq_users_byTier_scanned_Sep2020 <- customer_user_scans_join_Q7 %>% 
+  filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020), !is.na(createdAt)) %>%
+  group_by(tierId) %>%
+  summarise(uniqUsersWhoScannedInSep2020 = length(unique(customerId)))
+
+# Unique users (by TierId) who scanned in Oct 2020
+uniq_users_byTier_scanned_Oct2020 <- customer_user_scans_join_Q7 %>% 
+  filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020), !is.na(createdAt)) %>%
+  group_by(tierId) %>%
+  summarise(uniqUsersWhoScannedInSep2020 = length(unique(customerId)))
+
+# Number of bills scanned (Image) in Sep 2020
+num_bills_scanned_Sep2020_byTier <- customer_user_scans_join_Q7 %>% 
+  filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020), !is.na(image)) %>%
+  group_by(tierId) %>%
+  summarise(numBillsScannedInSep2020 = length(image))
+
+# Number of bills scanned (Image) in Oct 2020
+num_bills_scanned_Oct2020_byTier <- customer_user_scans_join_Q7 %>% 
+  filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020), !is.na(image)) %>%
+  group_by(tierId) %>%
+  summarise(numBillsScannedInOct2020 = length(image))
+
+# Scan Amount (billTotal) Sep 2020
+scan_amount_bill_total_Sep2020_byTier <- customer_user_scans_join_Q7 %>% 
+  filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020)) %>%
+  group_by(tierId) %>%
+  summarise(scanAmountBillTotalSep2020 = sum(billTotal, na.rm = TRUE))
+
+# Scan Amount (billTotal) October 2020
+scan_amount_bill_total_Oct2020_byTier <- customer_user_scans_join_Q7 %>% 
+  filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020)) %>%
+  group_by(tierId) %>%
+  summarise(scanAmountBillTotalOct2020 = sum(billTotal, na.rm = TRUE))
+
+
+
+```
+
 
 
 
