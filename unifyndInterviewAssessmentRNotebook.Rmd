@@ -866,53 +866,174 @@ customer_user_scans_join_Q7 <- customer_user_scans_join_Q7 %>%
   mutate(scanCreatedMonth = lubridate::month(createdAt), 
          scanCreatedYear = lubridate::year(createdAt))
 
-# left_join customer_user_scans_join_Q7 dataset with coupon_transactions_raw_unique
+# left_join customer_user_scans_join_Q7 dataset with coupon_transactions_raw_unique--------------------------------------
+
+# sanity checks before joining
+
+sum(coupon_transactions_raw_unique$customerId %in% 
+  customer_user_scans_join_Q7$customerId)
+
+sum(customer_user_scans_join_Q7$customerId %in% coupon_transactions_raw_unique$customerId)
+
+# left-joining after sanity check complete
+customer_user_scans_join_Q7_join_coupTransRawUniq <- 
+  left_join(customer_user_scans_join_Q7, coupon_transactions_raw_unique, 
+            by = "customerId")
 
 
 
-# Create parts of table separately and then bind them together-----------------
+# Create parts of table separately and then bind them together------------------------------------------------------------
 
 # Unique users (by TierId) who scanned in Sep 2020
 uniq_users_byTier_scanned_Sep2020 <- customer_user_scans_join_Q7 %>% 
+  select(customerId, tierId, scanCreatedMonth, scanCreatedYear, createdAt)
+
+uniq_users_byTier_scanned_Sep2020 <- uniq_users_byTier_scanned_Sep2020[!duplicated(uniq_users_byTier_scanned_Sep2020), ]
+
+uniq_users_byTier_scanned_Sep2020 <- uniq_users_byTier_scanned_Sep2020 %>%
   filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020), !is.na(createdAt)) %>%
   group_by(tierId) %>%
   summarise(uniqUsersWhoScannedInSep2020 = length(unique(customerId)))
 
+uniq_users_byTier_scanned_Sep2020 <- dplyr::add_row(
+  uniq_users_byTier_scanned_Sep2020, tierId = 5, uniqUsersWhoScannedInSep2020 = NA)
+
 # Unique users (by TierId) who scanned in Oct 2020
 uniq_users_byTier_scanned_Oct2020 <- customer_user_scans_join_Q7 %>% 
+  select(customerId, tierId, scanCreatedMonth, scanCreatedYear, createdAt)
+
+uniq_users_byTier_scanned_Oct2020 <- uniq_users_byTier_scanned_Oct2020[!duplicated(uniq_users_byTier_scanned_Oct2020), ]
+
+uniq_users_byTier_scanned_Oct2020 <- uniq_users_byTier_scanned_Oct2020 %>%
   filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020), !is.na(createdAt)) %>%
   group_by(tierId) %>%
-  summarise(uniqUsersWhoScannedInSep2020 = length(unique(customerId)))
+  summarise(uniqUsersWhoScannedInOct2020 = length(unique(customerId)))
+
 
 # Number of bills scanned (Image) in Sep 2020
-num_bills_scanned_Sep2020_byTier <- customer_user_scans_join_Q7 %>% 
+num_bills_scanned_Sep2020_byTier <- customer_user_scans_join_Q7 %>%
+  select(tierId, customerId, scanCreatedMonth, scanCreatedYear, image)
+
+num_bills_scanned_Sep2020_byTier <- num_bills_scanned_Sep2020_byTier[!duplicated(num_bills_scanned_Sep2020_byTier), ]
+
+num_bills_scanned_Sep2020_byTier <-  num_bills_scanned_Sep2020_byTier %>%
   filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020), !is.na(image)) %>%
   group_by(tierId) %>%
   summarise(numBillsScannedInSep2020 = length(image))
 
+num_bills_scanned_Sep2020_byTier <- dplyr::add_row(num_bills_scanned_Sep2020_byTier, 
+                tierId = 5, numBillsScannedInSep2020 = NA)
+
 # Number of bills scanned (Image) in Oct 2020
-num_bills_scanned_Oct2020_byTier <- customer_user_scans_join_Q7 %>% 
+
+num_bills_scanned_Oct2020_byTier <- customer_user_scans_join_Q7 %>%
+  select(tierId, customerId, scanCreatedMonth, scanCreatedYear, image)
+
+num_bills_scanned_Oct2020_byTier <- num_bills_scanned_Oct2020_byTier[!duplicated(num_bills_scanned_Oct2020_byTier), ]
+
+num_bills_scanned_Oct2020_byTier <-  num_bills_scanned_Oct2020_byTier %>%
   filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020), !is.na(image)) %>%
   group_by(tierId) %>%
   summarise(numBillsScannedInOct2020 = length(image))
 
 # Scan Amount (billTotal) Sep 2020
 scan_amount_bill_total_Sep2020_byTier <- customer_user_scans_join_Q7 %>% 
+  select(customerId, tierId, scanCreatedMonth, scanCreatedYear, billTotal)
+  
+scan_amount_bill_total_Sep2020_byTier <- scan_amount_bill_total_Sep2020_byTier[!duplicated(scan_amount_bill_total_Sep2020_byTier), ]
+
+scan_amount_bill_total_Sep2020_byTier <- 
+  scan_amount_bill_total_Sep2020_byTier %>%
   filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020)) %>%
   group_by(tierId) %>%
   summarise(scanAmountBillTotalSep2020 = sum(billTotal, na.rm = TRUE))
 
+scan_amount_bill_total_Sep2020_byTier <- dplyr::add_row(
+  scan_amount_bill_total_Sep2020_byTier, tierId = 5, 
+  scanAmountBillTotalSep2020 = NA
+)
+
 # Scan Amount (billTotal) October 2020
+
 scan_amount_bill_total_Oct2020_byTier <- customer_user_scans_join_Q7 %>% 
+  select(customerId, tierId, scanCreatedMonth, scanCreatedYear, billTotal)
+  
+scan_amount_bill_total_Oct2020_byTier <- scan_amount_bill_total_Oct2020_byTier[!duplicated(scan_amount_bill_total_Oct2020_byTier), ]
+
+scan_amount_bill_total_Oct2020_byTier <- 
+  scan_amount_bill_total_Oct2020_byTier %>%
   filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020)) %>%
   group_by(tierId) %>%
   summarise(scanAmountBillTotalOct2020 = sum(billTotal, na.rm = TRUE))
 
+# Coupon Unlocks in September 2020
+coupon_unlocks_sep2020_byTier <- customer_user_scans_join_Q7_join_coupTransRawUniq %>%
+  select(customerId, tierId, scanCreatedMonth, scanCreatedYear, couponId, 
+         couponUnlockDate) 
 
+coupon_unlocks_sep2020_byTier <- coupon_unlocks_sep2020_byTier[!duplicated(coupon_unlocks_sep2020_byTier), ]
+
+coupon_unlocks_sep2020_byTier <-  coupon_unlocks_sep2020_byTier  %>%
+  filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020)) %>%
+  group_by(tierId) %>%
+  summarise(couponUnlocksSep2020 = sum(!is.na(couponUnlockDate)))
+
+coupon_unlocks_sep2020_byTier <- dplyr::add_row(coupon_unlocks_sep2020_byTier, tierId = 5, couponUnlocksSep2020 = NA)
+
+# Coupon Unlocks in October 2020
+coupon_unlocks_Oct2020_byTier <- customer_user_scans_join_Q7_join_coupTransRawUniq %>%
+  select(customerId, tierId, scanCreatedMonth, scanCreatedYear, couponId, 
+         couponUnlockDate) 
+
+coupon_unlocks_Oct2020_byTier <- coupon_unlocks_Oct2020_byTier[!duplicated(coupon_unlocks_Oct2020_byTier), ]
+
+coupon_unlocks_Oct2020_byTier <-  coupon_unlocks_Oct2020_byTier %>%
+  filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020)) %>%
+  group_by(tierId) %>%
+  summarise(couponUnlocksOct2020 = sum(!is.na(couponUnlockDate)))
+
+# All sub-parts of table created. Now, joining all the sub-parts of the table into a single dataset, in a format as asked in Q7 Part 1---------------------
+
+monthOnMonthCompTableQ7P1 <- left_join(left_join(left_join(left_join(left_join(left_join(left_join(uniq_users_byTier_scanned_Sep2020, 
+          uniq_users_byTier_scanned_Oct2020, by = "tierId"),
+          num_bills_scanned_Sep2020_byTier, by = "tierId"), 
+          num_bills_scanned_Oct2020_byTier, by = "tierId"), 
+          scan_amount_bill_total_Sep2020_byTier, by = "tierId"), 
+          scan_amount_bill_total_Oct2020_byTier, by = "tierId"), 
+          coupon_unlocks_sep2020_byTier, by = "tierId"), 
+          coupon_unlocks_Oct2020_byTier, by = "tierId")
 
 ```
 
+&nbsp;
 
+#### Important Note for interpreting the above code chunk: 
+
+* There is a "createdAt" column both in the customer_user_raw dataset and customer_scans_raw dataset. The name is the same, but they mean different things. In the customer_user_raw dataset, the "createdAt" column refers to the **date at which the customer signed up**. 
+
+* In the customer_scans_raw dataset, the "createdAt" column refers to *the date at which the scanned bill was created*.  
+
+* To avoid confusion, after joining the customer_user_raw and customer_scans_raw dataset, I removed one of the "createdAt" column (one that comes from the customer_user_raw dataset and refers to the date of sign up).
+
+* So, the "createdAt" in the **customer_user_scans_join_Q7** dataset, corresponds to the "createdAt" column of the "customer_scans_raw" data. It should be interpreted as, it would have been interpreted in the scans dataset, i.e. it is the date at which the scan was created.
+
+* I also join the above (**customer_user_scans_join_Q7**) dataset with the **coupon_transactions_raw_unique** dataset. In the resulting dataset, called: **customer_user_scans_join_Q7_join_coupTransRawUniq**,  again, the "createdAt" column should be interpreted as: the date at which the scan was created.
+
+&nbsp;
+
+#### **Answer: Q7(Part-1):** Below present is the month on month comparison table in the format as asked in Q7 Part-1 of the assignement.
+
+```{r Q7-answer-part1-table, echo=TRUE, message=FALSE, warning=FALSE}
+
+knitr::kable(monthOnMonthCompTableQ7P1)
+
+```
+
+&nbsp;
+
+#### Generating a few graphs to get insight into the month-on-month comparison table
+
+&nbsp;
 
 
 
