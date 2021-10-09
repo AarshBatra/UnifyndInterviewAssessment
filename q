@@ -1,0 +1,101 @@
+[33mcommit 805a85cb48d4fd5fd8f6fc6836d41c3a8f149706[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Sat Oct 9 21:09:02 2021 +0530
+
+    Q7 Part-1 graphs generated, Part-2 started
+
+[33mcommit bdf30aead3f4c4b57c919060f130e0b9bf0708bf[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Sat Oct 9 16:41:48 2021 +0530
+
+    Q7-Part1 completed, table generated in correct format
+
+[33mcommit 498fdfc2d819d68055884a80ee00907613972f18[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Sat Oct 9 10:20:35 2021 +0530
+
+    Q6-Part5 completed, extra graphs for Q6 generated
+
+[33mcommit cb8e192c542e9e0c710b2d3ee636432f18bca522[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Sat Oct 9 02:16:53 2021 +0530
+
+    Q6 Part-4 completed, unique values bug fixed in Q6 part 1 to 4
+
+[33mcommit ec472ff31354791185b5bbb1734d2c9df13cdc04[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Sat Oct 9 00:21:58 2021 +0530
+
+    R Markdown prettifyed 80%, 20% left
+
+[33mcommit b6097ee3fb23325ec584e04b58dfaf6cdc31bec1[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 23:23:12 2021 +0530
+
+    Q6 Part-3 completed, also test for knitting .Rmd file to html: successful
+
+[33mcommit 18a74820b739eb20343fe0e4536fcafe3dd21a47[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 22:08:51 2021 +0530
+
+    Q6 Part 1 and 2 completed
+
+[33mcommit 2a7d309b3e1ccf3ff510c3192e5bc0578dfea61f[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 21:04:59 2021 +0530
+
+    unique value bug fixed in Q5 and Q6_Start, Q6 in progress
+
+[33mcommit 96c1febce187e3f53aa5790b7734f06f9595ccc4[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 17:02:33 2021 +0530
+
+    Q1toQ4 found and fixed bug relating to unique
+
+[33mcommit ae17bf4f2e15a34f354431dd5d4328e86e4cc89c[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 13:08:47 2021 +0530
+
+    Q5 completed: pivot table generated
+
+[33mcommit 90b1cd519bb06f9c1168451e566ce79774d30af2[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 05:33:44 2021 +0530
+
+    Q4 completed
+
+[33mcommit f07bacebdef5d7c08039210838a877dfb954caa5[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 05:01:46 2021 +0530
+
+    Q3 completed
+
+[33mcommit 719fd5ecd9f3342265aa4518c49980c7338bbb6e[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 04:28:34 2021 +0530
+
+    bug found in Q1 code, now fixed
+
+[33mcommit 012f6e626986ea653f4bbb39577b5330c5c9737d[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 04:15:15 2021 +0530
+
+    pushing the man subdirectory
+
+[33mcommit b75f9d86b25f1ea7bbc4828cb2016643b30fb22a[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Fri Oct 8 04:13:46 2021 +0530
+
+    Q1 and Q2 completed
+
+[33mcommit 662bf29dd6a21b593f729a0f30823c15ea039494[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Thu Oct 7 22:38:33 2021 +0530
+
+    readme.RMD updated, main Rmd code file added to root, added few helper functions
+
+[33mcommit 0271c2ccdf592b05964cd60cc788abf4eb0f808d[m
+Author: AarshBatra <aarshbatra.in@gmail.com>
+Date:   Thu Oct 7 18:02:00 2021 +0530
+
+    file structure set up completed

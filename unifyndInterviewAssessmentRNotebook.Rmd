@@ -781,25 +781,25 @@ foo_scans_tmp %>%
 
 #### **Answer: Q6(Part-5):** Observations and Insights:
 
-* In this cohort, more than 75% of the total number of users live in tier-2 alone. 86% of the users live in tier-1 and tier-2 combined. 98% of the users live in tier-1, tier-2 and tier-3 combined. Almost no one lives in Tier-4 and Tier-5. This shows that this particular cohort mostly resides in Urban high population centers. **[Refer: Tier distribution of Cohort users plot]**.
+* In this cohort, more than 75% of the total number of users live in tier-2 alone. 86% of the users live in tier-1 and tier-2 combined. 98% of the users live in tier-1, tier-2 and tier-3 combined. Almost no one lives in Tier-4 and Tier-5. This shows that this particular cohort mostly resides in Urban high population centers. **[Refer plot: Tier distribution of Cohort users plot]**.
 
-* Around 70% of the users in this cohort are Males and 30% females. But, almost 15% of data on 'gender' is missing (either NA, or NULL). **[Refer: Gender distribution of cohort users plot]**.
+* Around 70% of the users in this cohort are Males and 30% females. But, almost 15% of data on 'gender' is missing (either NA, or NULL). **[Refer plot: Gender distribution of cohort users plot]**.
   
   *The sex ratio for India according to [this article](https://www.census2011.co.in/sexratio.php) is 1.06 males for every 1 female. This means that for every 1000 females there are 1060 males. 
   
   * The sex ratio in our cohort (with missing gender data) is 2.47 males for 1 female, which would mean that for every 1000 females, there are 2,470 males. That does not seem right. Gender gap will probably decrease if missing data becomes available.
   
-* Almost all of the missing data, comes from either tier-1, tier-2 or tier-3. This makes sense as that is where most of the users reside. **[Refer: Gender distribution within tiers plot]**
+* Almost all of the missing data, comes from either tier-1, tier-2 or tier-3. This makes sense as that is where most of the users reside. **[Refer plot: Gender distribution within tiers plot]**
 
-* Gender gap within tiers is similar to the gender gap in the  overall data. But, as mentioned earlier, this is probably because a lot of data on gender is missing. **[Refer: Gender distribution within tiers plot]**
+* Gender gap within tiers is similar to the gender gap in the  overall data. But, as mentioned earlier, this is probably because a lot of data on gender is missing. **[Refer plot: Gender distribution within tiers plot]**
 
-* Users scanned the most from Big Bazaar. Of the total number of scans count in the top 5 stores (from which users scanned the most), more than half of those scans are for Big Bazaar. The next big chunk is taken by the Lifestyle store, followed by Luxe, Latt Liv and Miniso. **[Refer: 5 stores users scanned most from plot]**
+* Users scanned the most from Big Bazaar. Of the total number of scans count in the top 5 stores (from which users scanned the most), more than half of those scans are for Big Bazaar. The next big chunk is taken by the Lifestyle store, followed by Luxe, Latt Liv and Miniso. **[Refer plot: 5 stores users scanned most from plot]**
 
-* Big Bazaar and Lifestyle probably being the most pocket friendly, were the ones that users scanned the most. But, for more expensive (relatively) stores like Luxe, Miniso, Latt Liv we see lesser number of scans (compared to Big Bazaar). **[Ref: 5 stores users scanned most from plot]**
+* Big Bazaar and Lifestyle probably being the most pocket friendly, were the ones that users scanned the most. But, for more expensive (relatively) stores like Luxe, Miniso, Latt Liv we see lesser number of scans (compared to Big Bazaar). **[Ref plot: 5 stores users scanned most from plot]**
 
-* The source from which most users are coming is NPBPROMO3, the next best top sources also are versions of this NPBPROMO class. This means that these are probably the best places for shop owners to invest their money in to attract customers.**[Refer: Top 5 sources from which most users are coming]**
+* The source from which most users are coming is NPBPROMO3, the next best top sources also are versions of this NPBPROMO class. This means that these are probably the best places for shop owners to invest their money in to attract customers.**[Refer plot: Top 5 sources from which most users are coming]**
 
-* **[Refer: billTotal distribution for top 5 stores users scanned most from]**
+* **[Refer plot: billTotal distribution for top 5 stores users scanned most from]**
  
   * We see that average values for billTotal for all stores is approximately the same. For big bazaar the average is the lowest, which is expected.
   
@@ -893,12 +893,12 @@ uniq_users_byTier_scanned_Sep2020 <- uniq_users_byTier_scanned_Sep2020[!duplicat
 uniq_users_byTier_scanned_Sep2020 <- uniq_users_byTier_scanned_Sep2020 %>%
   filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020), !is.na(createdAt)) %>%
   group_by(tierId) %>%
-  summarise(uniqUsersWhoScannedInSep2020 = length(unique(customerId)))
+  summarise(uniqUsersWhoScannedIn_Sep2020 = length(unique(customerId)))
 
 uniq_users_byTier_scanned_Sep2020 <- dplyr::add_row(
-  uniq_users_byTier_scanned_Sep2020, tierId = 5, uniqUsersWhoScannedInSep2020 = NA)
+  uniq_users_byTier_scanned_Sep2020, tierId = 5, uniqUsersWhoScannedIn_Sep2020 = NA)
 
-# Unique users (by TierId) who scanned in Oct 2020
+# Unique users (by tierId) who scanned in Oct 2020
 uniq_users_byTier_scanned_Oct2020 <- customer_user_scans_join_Q7 %>% 
   select(customerId, tierId, scanCreatedMonth, scanCreatedYear, createdAt)
 
@@ -907,7 +907,7 @@ uniq_users_byTier_scanned_Oct2020 <- uniq_users_byTier_scanned_Oct2020[!duplicat
 uniq_users_byTier_scanned_Oct2020 <- uniq_users_byTier_scanned_Oct2020 %>%
   filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020), !is.na(createdAt)) %>%
   group_by(tierId) %>%
-  summarise(uniqUsersWhoScannedInOct2020 = length(unique(customerId)))
+  summarise(uniqUsersWhoScannedIn_Oct2020 = length(unique(customerId)))
 
 
 # Number of bills scanned (Image) in Sep 2020
@@ -919,10 +919,10 @@ num_bills_scanned_Sep2020_byTier <- num_bills_scanned_Sep2020_byTier[!duplicated
 num_bills_scanned_Sep2020_byTier <-  num_bills_scanned_Sep2020_byTier %>%
   filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020), !is.na(image)) %>%
   group_by(tierId) %>%
-  summarise(numBillsScannedInSep2020 = length(image))
+  summarise(numBillsScannedIn_Sep2020 = length(image))
 
 num_bills_scanned_Sep2020_byTier <- dplyr::add_row(num_bills_scanned_Sep2020_byTier, 
-                tierId = 5, numBillsScannedInSep2020 = NA)
+                tierId = 5, numBillsScannedIn_Sep2020 = NA)
 
 # Number of bills scanned (Image) in Oct 2020
 
@@ -934,7 +934,7 @@ num_bills_scanned_Oct2020_byTier <- num_bills_scanned_Oct2020_byTier[!duplicated
 num_bills_scanned_Oct2020_byTier <-  num_bills_scanned_Oct2020_byTier %>%
   filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020), !is.na(image)) %>%
   group_by(tierId) %>%
-  summarise(numBillsScannedInOct2020 = length(image))
+  summarise(numBillsScannedIn_Oct2020 = length(image))
 
 # Scan Amount (billTotal) Sep 2020
 scan_amount_bill_total_Sep2020_byTier <- customer_user_scans_join_Q7 %>% 
@@ -946,11 +946,11 @@ scan_amount_bill_total_Sep2020_byTier <-
   scan_amount_bill_total_Sep2020_byTier %>%
   filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020)) %>%
   group_by(tierId) %>%
-  summarise(scanAmountBillTotalSep2020 = sum(billTotal, na.rm = TRUE))
+  summarise(scanAmountBillTotal_Sep2020 = sum(billTotal, na.rm = TRUE))
 
 scan_amount_bill_total_Sep2020_byTier <- dplyr::add_row(
   scan_amount_bill_total_Sep2020_byTier, tierId = 5, 
-  scanAmountBillTotalSep2020 = NA
+  scanAmountBillTotal_Sep2020 = NA
 )
 
 # Scan Amount (billTotal) October 2020
@@ -964,7 +964,7 @@ scan_amount_bill_total_Oct2020_byTier <-
   scan_amount_bill_total_Oct2020_byTier %>%
   filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020)) %>%
   group_by(tierId) %>%
-  summarise(scanAmountBillTotalOct2020 = sum(billTotal, na.rm = TRUE))
+  summarise(scanAmountBillTotal_Oct2020 = sum(billTotal, na.rm = TRUE))
 
 # Coupon Unlocks in September 2020
 coupon_unlocks_sep2020_byTier <- customer_user_scans_join_Q7_join_coupTransRawUniq %>%
@@ -976,9 +976,9 @@ coupon_unlocks_sep2020_byTier <- coupon_unlocks_sep2020_byTier[!duplicated(coupo
 coupon_unlocks_sep2020_byTier <-  coupon_unlocks_sep2020_byTier  %>%
   filter(scanCreatedMonth %in% c(9), scanCreatedYear %in% c(2020)) %>%
   group_by(tierId) %>%
-  summarise(couponUnlocksSep2020 = sum(!is.na(couponUnlockDate)))
+  summarise(couponUnlocks_Sep2020 = sum(!is.na(couponUnlockDate)))
 
-coupon_unlocks_sep2020_byTier <- dplyr::add_row(coupon_unlocks_sep2020_byTier, tierId = 5, couponUnlocksSep2020 = NA)
+coupon_unlocks_sep2020_byTier <- dplyr::add_row(coupon_unlocks_sep2020_byTier, tierId = 5, couponUnlocks_Sep2020 = NA)
 
 # Coupon Unlocks in October 2020
 coupon_unlocks_Oct2020_byTier <- customer_user_scans_join_Q7_join_coupTransRawUniq %>%
@@ -990,7 +990,7 @@ coupon_unlocks_Oct2020_byTier <- coupon_unlocks_Oct2020_byTier[!duplicated(coupo
 coupon_unlocks_Oct2020_byTier <-  coupon_unlocks_Oct2020_byTier %>%
   filter(scanCreatedMonth %in% c(10), scanCreatedYear %in% c(2020)) %>%
   group_by(tierId) %>%
-  summarise(couponUnlocksOct2020 = sum(!is.na(couponUnlockDate)))
+  summarise(couponUnlocks_Oct2020 = sum(!is.na(couponUnlockDate)))
 
 # All sub-parts of table created. Now, joining all the sub-parts of the table into a single dataset, in a format as asked in Q7 Part 1---------------------
 
@@ -1019,9 +1019,15 @@ monthOnMonthCompTableQ7P1 <- left_join(left_join(left_join(left_join(left_join(l
 
 * I also join the above (**customer_user_scans_join_Q7**) dataset with the **coupon_transactions_raw_unique** dataset. In the resulting dataset, called: **customer_user_scans_join_Q7_join_coupTransRawUniq**,  again, the "createdAt" column should be interpreted as: the date at which the scan was created.
 
+* The final table is generated by joining each subset table (8 subset tables in total). This is why we see a bunch a lot of left_joins in the end of the above code chunk.
+
+* Also, please note that 5th tier was not present in any of the September, 2020 subset tables, so before joining the subset tables, I added an additional (5th) row at the end of the dataset for the 5th tier (with its value being NA) for all September 2020 subset tables. 
+
 &nbsp;
 
 #### **Answer: Q7(Part-1):** Below present is the month on month comparison table in the format as asked in Q7 Part-1 of the assignement.
+
+&nbsp;
 
 ```{r Q7-answer-part1-table, echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -1031,11 +1037,136 @@ knitr::kable(monthOnMonthCompTableQ7P1)
 
 &nbsp;
 
-#### Generating a few graphs to get insight into the month-on-month comparison table
+#### Q7 Part-1 Graphs: Generating a few graphs to get insight into the month-on-month comparison table genrated above. After this I will answer Q7: parts 2 and 3.
+
+```{r Q7-part1-graphs, echo=TRUE, message=FALSE, warning=FALSE}
+
+# bringing the data into a tidy format to make plots with ggplot2
+monthOnMonthCompTableQ7P1_tidyFormat <- pivot_longer(monthOnMonthCompTableQ7P1, cols = !tierId, names_to = c("trait", "monthYear"), names_pattern = "(.+)_(.+)" , values_to = "values")
+
+# Graph 1: Comparing total unique users who scanned in Sep v/s Oct (2020)
+monthOnMonthCompTableQ7P1_tidyFormat %>% 
+  filter(trait == "uniqUsersWhoScannedIn") %>%
+  ggplot(mapping = aes(x = tierId, y = values, fill = monthYear)) +
+  geom_col(position = "dodge") + 
+  scale_y_continuous(breaks = seq(0, 500, by = 50)) +
+  ggtitle("Unique users who scanned in Sep 2020 and Oct 2020") +
+  geom_text(mapping = aes(label = values), position=position_dodge(width=0.9), vjust=-0.25) +
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme_minimal()
+
+
+# Graph 2: Comparing number of bills scanned in Sep v/s Oct (2020)
+monthOnMonthCompTableQ7P1_tidyFormat %>% 
+  filter(trait == "numBillsScannedIn") %>%
+  ggplot(mapping = aes(x = tierId, y = values, fill = monthYear)) +
+  geom_col(position = "dodge") + 
+  ggtitle("Number of bills scanned in Sep 2020 and Oct 2020") +
+  geom_text(mapping = aes(label = values), position=position_dodge(width=0.9), vjust=-0.25) +
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme_minimal()
+
+
+# Graph 3: Comparing: Scanned amount bill total in Sep v/s Oct 2020
+
+monthOnMonthCompTableQ7P1_tidyFormat %>% 
+  filter(trait == "scanAmountBillTotal") %>%
+  ggplot(mapping = aes(x = tierId, y = values, fill = monthYear)) +
+  geom_col(position = "dodge") + 
+  ggtitle("Scanned amount bill total in Sep 2020 and Oct (2020)") +
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme_minimal()
+
+
+# Graph 4: Comparing Coupon Unlocks in Sep v/s Oct (2020)
+
+monthOnMonthCompTableQ7P1_tidyFormat %>% 
+  filter(trait == "couponUnlocks") %>%
+  ggplot(mapping = aes(x = tierId, y = values, fill = monthYear)) +
+  geom_col(position = "dodge") + 
+  ggtitle("Coupon Unlocks in Sep 2020 and Oct (2020)") +
+  geom_text(mapping = aes(label = values), position=position_dodge(width=0.9), vjust=-0.25) +
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  theme_minimal()
+
+# Graph 5: A facetted bar plot to see all of the above in one graph (but y axis will be in log10 scale, as values for each group differ a lot)
+
+monthOnMonthCompTableQ7P1_tidyFormat %>%
+  ggplot(mapping = aes(x = tierId, y = values, fill = monthYear)) +
+  geom_col(position = "dodge") + 
+  scale_y_log10()+
+  facet_wrap(~ trait) +
+  ggtitle("Above 4 graphs in one plot with y axis in log10 scale")
+
+```
 
 &nbsp;
 
+#### Note: In the final graph above with title **Above 4 graphs in one plot with y axis in log10 scale**, the y axis is in **log10** scale. For the 4 groups in the plot, range of values differs by a lot, hence y axis is log scaled, so as to display all 4 groups together in one single plot.
+
+&nbsp;
+
+<hr>
+
+#### **Q7(Part-2):** Analyse the change in September Vs October and highlight/mention the highest changes for each tier
+
+&nbsp;
+
+```{r Q7-part2-answer, echo=TRUE, message=FALSE, warning=FALSE}
+
+# adding 4 (difference columns) to monthOnMonthTableQ7P1
+
+# monthOnMonthCompTableQ7P1_tidyFormat %>%
+#   group_by(tierId, trait) %>%
+#   summarise(count = subtract(values)) 
+
+monthOnMonthDifferenceCompQ7Part2 <-  monthOnMonthCompTableQ7P1 %>%
+  mutate(diff_unq_users_scan_oct2020_sep2020 = (uniqUsersWhoScannedIn_Oct2020 - uniqUsersWhoScannedIn_Sep2020), 
+         diff_num_bills_scanned_oct2020_sep2020 = 
+           (numBillsScannedIn_Oct2020 - numBillsScannedIn_Sep2020), 
+         diff_scan_amt_billTotal_oct2020_sep2020 = 
+           (scanAmountBillTotal_Oct2020 - scanAmountBillTotal_Sep2020), 
+         diff_couponUnlocks_oct2020_sep2020 = 
+           (couponUnlocks_Oct2020 - couponUnlocks_Sep2020)) %>%
+  select("tierId", starts_with("diff"))
+
+monthOnMonthDifferenceCompQ7Part2
+
+```
+
+&nbsp;
+
+#### **Answer: Q7(Part-2): This also contains  many observations that will count towards the answer of Q7(Part-3).** 
+
+* In addition to the above graphs, below present is a  table that summarizes the same information (as in the above graphs), but in form of differences (October 2020 minus September 2020) by tierId. For example: **diff_scan_amt_billTotal_oct2020_sep2020** column contains the following information (for each tier): change(increase is +, decrease is -) in billTotal Amount from Sep 2020 to Oct 2020. 
+
+* **The highest changes for each tier are as follows**:
+  
+  * First, note that because there is no data available for tier-5 in Sep 2020, we can not comment on how their metrics changed from september to october. Also, this is true in general for the entire dataset, as only 3 rows of data for tier-5 are present. So, when comparing changes (in various attributes of interest) from September 2020 to October 2020, we will focus on tier 1 to 4.
+  
+  * **[Ref table above and also the plot above named: Unique users who scanned in Sep 2020 and Oct 2020]**: The number of unique users who scanned dropped drastically (-43, a 22% decline from 191) for *tier-1* (from Sep2020 to Oct 2020) relative to the other tiers, which saw small gains (from Sep2020 to Oct2020) in the number of unique users who scanned.
+  
+  * **[Refer Table above and also the plot above named: Number of bill scanned in Sep 2020 and Oct 2020]**: The total number of bills scanned increased 20 fold (2000%, i.e from 1 to 21) for Tier-4 from September 2020 to October 2020. This was the biggest change in the total number of bills scanned for any given tier. Tier 3 also saw a 51% increase in total number of bills scanned (from 190 in sep 2020 to 287 in occt 2020). For the rest (tier 1 and 2), both saw a decline in the total number of bills scanned, with tier-1(-23%, from 339 to 257) declining almost 3 times more than tier-2(-9% from 935 to 850). 
+  
+  * **[Refer table above and also the plot above named: Scanned amount in bill total in Sep 2020 and Oct 2020]**: Scanned amount bill total increased (from Sep2020 to Oct2020) the most for Tier-3. This is consistent with point above in which we saw a 51% increase in the number of bills scanned. As, the number of bills scanned increases, so will the scanned amount of the bill. Similarly, as expected the percentage decline in scanned amount bill total for tier-1 is much more (-66%, a decline of ~ -2 Lacs from initial 6 lacs) than tier-2 (-4% ~ -3 lacs, from an intial of 65.5 lacs). Also, as we saw in the above point a 2000% increase in the total number of bills scanned for tier-4 (from sep 2020 to Oct 2020), here similarly we find that the increase in the scanned amount of bill total for tier-4 is a 218 fold increase, from a mere 275 Rs to massive 60K!.
+  
+  * **[Refer the table above and also the plot above named: Coupons unlocked in Sep 2020 and October 2020]**: For every tier (except tier-4, for which there was a marginal increase of 2 coupons), the coupon unlocks declined from Sep-2020 to October-2020. The decline in the number of coupons in tier-1 was 3 times (-30%, from 216 to 151) compared to tier-1 and tier-2 (both had a decline of 10%).  
+   
+&nbsp;
+
+<hr>
+
+#### **Answer: Q7(Part-3): Many of the above observations count towards the answer for Q7(Part-3). I will present a few more observations and insights below:**
+
+* Tier-1 saw decline in all the places, given a 22% decline (from sep2020 to oct2020) in its unique users who scanned, there was a decline in all other variables too. For example, the *number of bills scanned* (declined by 23%) and scanned amount in bill total (declined by 66%) is expected as the number of unique users dropped from sep2020 to oct2020. Also, there was a 30 percent decline in coupons unlocked for tier-1, which makes sense as its unique users dropped significantly.
+
+* For tier-2 even though, it saw a increase in the total number of unique users who scanned, the total number of bills scanned and the scanned amount in bill total both suffered a decline. This may be explained by the fact that the increase in the unique users who scanned was only by ~ 3% (from 341 to 351). So, even if assume that these additional 3% did scan, it is quite possible that this is easily offset by the rest of the tier spending/scanning a little less.
+
+* As we noted in Q7 (Part-2), tier-3 saw a signficant increase in the number of bills scanned (and by effect the scanned Amount in Bill total) from September 2020 to October 2020. This increase is in part attributable to a 38% (from 42 to 58) in the number of unique users who scanned in tier-3.
+
+* Also, for tier-4 we see a 
 
 
-aaa
+
+
 
