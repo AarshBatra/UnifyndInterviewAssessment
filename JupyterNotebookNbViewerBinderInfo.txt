@@ -1,0 +1,3 @@
+nbviewer link: https://nbviewer.org/github/AarshBatra/UnifyndInterviewAssessment/blob/master/unifyndInterviewAssessmentJupyterNotebookAarshBatra.ipynb
+
+binder link (corresponding to the above nbViewer link): https://mybinder.org/v2/gh/AarshBatra/UnifyndInterviewAssessment/7478f75df4dfb4393d07a891f898fee6357edb2c?filepath=unifyndInterviewAssessmentJupyterNotebookAarshBatra.ipynb 
